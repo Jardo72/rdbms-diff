@@ -1,2 +1,2 @@
 from .config import DatabaseProperties, Configuration
-from .config import read_config
+from .config import epilog, read_config
