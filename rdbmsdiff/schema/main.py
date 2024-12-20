@@ -3,7 +3,8 @@ from argparse import ArgumentParser, Namespace, RawTextHelpFormatter
 from colorama import init as colorama_init, Fore
 
 from rdbmsdiff.foundation import epilog, read_config
-from .metadata import read_db_meta_data
+from rdbmsdiff.schema import DBSchemaDiff
+from rdbmsdiff.schema import read_db_meta_data
 
 
 def create_cmd_line_args_parser() -> ArgumentParser:
@@ -70,4 +71,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-
