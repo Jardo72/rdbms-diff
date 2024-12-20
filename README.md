@@ -5,11 +5,11 @@
 ## Schema Comparison
 
 ```
-python -m rdbmsdiff.schema_dyff
+python -m rdbmsdiff.schema.main
 ```
 
 ## Record Count Comparison
 
 ```
-python -m rdbmsdiff.record_count_diff
+python -m rdbmsdiff.recordcount.main
 ```
