@@ -59,7 +59,16 @@ def read_record_counts(db_properties: DatabaseProperties) -> Dict[str, int]:
 
 
 def compare_record_counts(source_record_counts: Dict[str, int], target_record_counts: Dict[str, int]) -> None:
-    ...
+    # TODO: what about tables present in the source DB, but missing in the target DB?
+    for table in target_record_counts.keys():
+        if table not in source_record_counts:
+            continue
+        source_record_count = source_record_counts[table]
+        target_record_count = target_record_counts[table]
+        if source_record_count == target_record_count:
+            print(f"{Fore.GREEN}{table}: {source_record_count} == {target_record_count}{Fore.RESET}")
+        else:
+            print(f"{Fore.RED}{table}: {source_record_count} != {target_record_count}{Fore.RESET}")
 
 
 def main() -> None:
