@@ -26,26 +26,14 @@ class DBTableColumnsDiff:
 
 
 @dataclass(frozen=True, slots=True)
-class DBTableConstraintsDiff:
-    constraints_missing_in_source_db: Tuple[str, ...]
-    constraints_missing_in_target_db: Tuple[str, ...]
+class DBTableEnhancementsDiff:
+    names_missing_in_source_db: Tuple[str, ...]
+    names_missing_in_target_db: Tuple[str, ...]
 
     def is_empty(self) -> bool:
         return (
-            len(self.constraints_missing_in_source_db) == 0 and
-            len(self.constraints_missing_in_target_db) == 0
-        )
-    
-
-@dataclass(frozen=True, slots=True)
-class DBTableIndexesDiff:
-    indexes_missing_in_source_db: Tuple[str, ...]
-    indexes_missing_in_target_db: Tuple[str, ...]
-
-    def is_empty(self) -> bool:
-        return (
-            len(self.indexes_missing_in_source_db) == 0 and
-            len(self.indexes_missing_in_target_db) == 0
+            len(self.names_missing_in_source_db) == 0 and
+            len(self.names_missing_in_target_db) == 0
         )
     
 
@@ -56,8 +44,8 @@ _EMPTY_TUPLE = tuple()
 class DBTableDiff:
     name: str
     column_diff: Optional[DBTableColumnsDiff]
-    constraint_diff: Optional[DBTableConstraintsDiff]
-    index_diff: Optional[DBTableIndexesDiff]
+    constraint_diff: Optional[DBTableEnhancementsDiff]
+    index_diff: Optional[DBTableEnhancementsDiff]
 
     def has_column_discrepancies(self) -> bool:
         if self.column_diff is None:
@@ -88,19 +76,19 @@ class DBTableDiff:
 
     @property
     def constraints_missing_in_source_db(self) -> Tuple[str, ...]:
-        return self.constraint_diff.constraints_missing_in_source_db if self.constraint_diff else _EMPTY_TUPLE
+        return self.constraint_diff.names_missing_in_source_db if self.constraint_diff else _EMPTY_TUPLE
 
     @property
     def constraints_missing_in_target_db(self) -> Tuple[str, ...]:
-        return self.constraint_diff.constraints_missing_in_target_db if self.constraint_diff else _EMPTY_TUPLE
+        return self.constraint_diff.names_missing_in_target_db if self.constraint_diff else _EMPTY_TUPLE
 
     @property
     def indexes_missing_in_source_db(self) -> Tuple[str, ...]:
-        return self.index_diff.indexes_missing_in_source_db if self.index_diff else _EMPTY_TUPLE
+        return self.index_diff.names_missing_in_source_db if self.index_diff else _EMPTY_TUPLE
 
     @property
     def indexes_missing_in_target_db(self) -> Tuple[str, ...]:
-        return self.index_diff.indexes_missing_in_target_db if self.index_diff else _EMPTY_TUPLE
+        return self.index_diff.names_missing_in_target_db if self.index_diff else _EMPTY_TUPLE
 
  
 class _NamesDiff:
