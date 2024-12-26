@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import Any, Optional, Sequence, Set, Tuple
 
-from rdbmsdiff.schema import DBSchema
+from rdbmsdiff.schema import DBSchema, DBTable
 
 
 @dataclass(frozen=True, slots=True)
@@ -91,6 +91,67 @@ class DBTableDiff:
         return self.index_diff.names_missing_in_target_db if self.index_diff else _EMPTY_TUPLE
 
  
+class DBTablesDiff:
+
+    def __init__(self, source_schema: DBSchema, target_schema: DBSchema) -> None:
+        self._source_db_tables = {}
+        for table in source_schema.tables:
+            self._source_db_tables[table.name] = table
+
+        self._target_db_tables = {}
+        for table in target_schema.tables:
+            self._target_db_tables[table.name] = table
+
+    def tables_missing_in_source_db(self) -> Tuple[str, ...]:
+        source_tables = set(self._source_db_tables.keys())
+        target_tables = set(self._target_db_tables.keys())
+        return tuple(target_tables - source_tables)
+
+    def number_of_tables_missing_in_source_db(self) -> int:
+        return len(self.tables_missing_in_source_db())
+
+    def tables_missing_in_target_db(self) -> Tuple[str, ...]:
+        source_tables = set(self._source_db_tables.keys())
+        target_tables = set(self._target_db_tables.keys())
+        return tuple(source_tables - target_tables)
+
+    def number_of_tables_missing_in_target_db(self) -> int:
+        return len(self.tables_missing_in_target_db())
+
+    def _common_tables(self) -> Tuple[str, ...]:
+        source_tables = set(self._source_db_tables.keys())
+        target_tables = set(self._target_db_tables.keys())
+        return tuple(source_tables.intersection(target_tables))
+
+    def _compare_columns(self, source_table: DBTable, target_table: DBTable) -> Optional[DBTableColumnsDiff]:
+        source_column_names = source_table.column_names_as_set()
+        target_column_names = target_table.column_names_as_set()
+        columns_missing_in_source_db = target_column_names - source_column_names
+        columns_missing_in_target_db = source_column_names - target_column_names
+
+        source_columns = source_table.columns_as_dict()
+        target_columns = target_table.columns_as_dict()
+        distinct_type_columns = []
+        for column_name in source_column_names.intersection(target_column_names):
+            source_column = source_columns[column_name]
+            target_column = target_columns[column_name]
+            if str(source_column.datatype) != str(target_column.datatype):
+                distinct_type_columns.append(DBColumnDiff(
+                    name=column_name,
+                    source_data_type=source_column.datatype,
+                    target_data_type=target_column.datatype,
+                ))
+
+        if len(columns_missing_in_source_db) == 0 and len(columns_missing_in_target_db) == 0 and len(distinct_type_columns) == 0:
+            return None
+
+        return DBTableColumnsDiff(
+            columns_missing_in_source_db=tuple(columns_missing_in_source_db),
+            columns_missing_in_target_db=tuple(columns_missing_in_target_db),
+            columns_with_distinct_data_type=tuple(distinct_type_columns),
+        )
+
+
 class _NamesDiff:
 
     def __init__(self, source_names: Sequence[str], target_names: Sequence[str]) -> None:
@@ -113,9 +174,22 @@ class _NamesDiff:
 class DBSchemaDiff:
 
     def __init__(self, source_schema: DBSchema, target_schema: DBSchema) -> None:
+        self._tables_diff = DBTablesDiff(source_schema, target_schema)
         self._sequences_diff = _NamesDiff(source_schema.sequences, target_schema.sequences)
         self._views_diff = _NamesDiff(source_schema.views, target_schema.views)
         self._materialized_views_diff = _NamesDiff(source_schema.materialized_views, target_schema.materialized_views)
+
+    def tables_missing_in_source_db(self) -> Tuple[str, ...]:
+        return self._tables_diff.tables_missing_in_source_db()
+
+    def number_of_tables_missing_in_source_db(self) -> int:
+        return self._tables_diff.number_of_tables_missing_in_source_db()
+
+    def tables_missing_in_target_db(self) -> Tuple[str, ...]:
+        return self._tables_diff.tables_missing_in_target_db()
+
+    def number_of_tables_missing_in_target_db(self) -> int:
+        return self._tables_diff.number_of_tables_missing_in_target_db()
 
     def sequences_missing_in_source_db(self) -> Tuple[str, ...]:
         return self._sequences_diff.names_missing_in_source_db()
