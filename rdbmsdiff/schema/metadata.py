@@ -127,6 +127,9 @@ class _MetaDataReader:
 
 
 def read_db_meta_data(db_properties: DatabaseProperties) -> DBSchema:
+    print()
+    print(f"Going to read meta-info from {Fore.CYAN}{db_properties.url_without_password}{Fore.RESET}, schema {Fore.CYAN}{db_properties.schema}{Fore.RESET}")
+
     # chances are we should take care about closing the reader
     reader = _MetaDataReader(db_properties)
     return reader.read_meta_data()
