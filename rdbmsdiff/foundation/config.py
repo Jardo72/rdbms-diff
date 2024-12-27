@@ -19,7 +19,7 @@ class DatabaseProperties:
 
     @property
     def url_with_password(self) -> str:
-        return self.url.replace("${password}", self.password),
+        return self.url.replace("${password}", self.password)
 
     @property
     def url_without_password(self) -> str:
@@ -52,8 +52,8 @@ def _read_password_from_environment(var_name: str) -> str:
 
 def _read_passwords_from_environment() -> Passwords:
     return Passwords(
-        source_db_password=_read_password_from_environment("SOURCE_DB_PASSWORD"),
-        target_db_password=_read_password_from_environment("TARGET_DB_PASSWORD"),
+        source_db_password=_read_password_from_environment("RDBMS_DIFF_SOURCE_DB_PASSWORD"),
+        target_db_password=_read_password_from_environment("RDBMS_DIFF_TARGET_DB_PASSWORD"),
     )
 
 
@@ -61,11 +61,9 @@ def read_config(filename: str, ask_for_passwords: bool) -> Configuration:
     if not exists(filename):
         message = f"Cannot read configuration file {filename} (no such file)."
         # TODO: raise an exception
-        ...
     if not isfile(filename):
         message = f"Cannot read configuration file {filename} (not a file)."
         # TODO: raise an exception
-        ...
     config = ConfigParser()
     config.read(filename)
     passwords = _read_passwords_from_input() if ask_for_passwords else _read_passwords_from_environment()
