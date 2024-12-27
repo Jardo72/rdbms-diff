@@ -4,7 +4,7 @@ from typing import Any, Dict, Set, Tuple
 from colorama import Fore
 from sqlalchemy import create_engine, inspect, MetaData
 
-from foundation import DatabaseProperties
+from rdbmsdiff.foundation import DatabaseProperties
 
 
 @dataclass(frozen=True, slots=True)

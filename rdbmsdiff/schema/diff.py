@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import Any, Optional, Sequence, Set, Tuple
 
-from rdbmsdiff.schema import DBSchema, DBTable
+from .metadata import DBSchema, DBTable
 
 
 @dataclass(frozen=True, slots=True)
@@ -118,6 +118,17 @@ class DBTablesDiff:
     def number_of_tables_missing_in_target_db(self) -> int:
         return len(self.tables_missing_in_target_db())
 
+    def tables_with_incompatible_columns(self) -> Tuple[DBTableDiff, ...]:
+        result = []
+        for table_name in self._common_tables():
+            table_diff = self._compare_tables(self._source_db_tables[table_name], self._target_db_tables[table_name])
+            if table_diff and table_diff.has_column_discrepancies():
+                result.append(table_diff)
+        return tuple(result)
+
+    def number_of_tables_with_incompatible_columns(self) -> int:
+        return len(self.tables_with_incompatible_columns())
+
     def _common_tables(self) -> Tuple[str, ...]:
         source_tables = set(self._source_db_tables.keys())
         target_tables = set(self._target_db_tables.keys())
@@ -150,6 +161,22 @@ class DBTablesDiff:
             columns_missing_in_target_db=tuple(columns_missing_in_target_db),
             columns_with_distinct_data_type=tuple(distinct_type_columns),
         )
+
+    def _compare_tables(self, source_table: DBTable, target_table: DBTable) -> Optional[DBTableDiff]:
+        assert source_table.name == target_table.name
+        column_diff = self._compare_columns(source_table, target_table)
+        constraint_diff = self._compare_constraints(source_table, target_table)
+        index_diff = self._compare_indexes(source_table, target_table)
+
+        if column_diff or constraint_diff or index_diff:
+            return DBTableDiff(
+                name=source_table.name,
+                column_diff=column_diff,
+                constraint_diff=constraint_diff,
+                index_diff=index_diff
+            )
+        else:
+            return None
 
 
 class _NamesDiff:
@@ -191,6 +218,12 @@ class DBSchemaDiff:
     def number_of_tables_missing_in_target_db(self) -> int:
         return self._tables_diff.number_of_tables_missing_in_target_db()
 
+    def tables_with_incompatible_columns(self) -> Tuple[DBTableDiff, ...]:
+        return self._tables_diff.tables_with_incompatible_columns()
+
+    def number_of_tables_with_incompatible_columns(self) -> int:
+        return self._tables_diff.number_of_tables_with_incompatible_columns()
+
     def sequences_missing_in_source_db(self) -> Tuple[str, ...]:
         return self._sequences_diff.names_missing_in_source_db()
 
@@ -214,3 +247,15 @@ class DBSchemaDiff:
 
     def number_of_views_missing_in_target_db(self) -> int:
         return self._views_diff.number_of_names_missing_in_target_db()
+
+    def materialized_views_missing_in_source_db(self) -> Tuple[str, ...]:
+        return self._materialized_views_diff.names_missing_in_source_db()
+
+    def number_of_materialized_views_missing_in_source_db(self) -> int:
+        return self._materialized_views_diff.number_of_names_missing_in_source_db()
+
+    def materialized_views_missing_in_target_db(self) -> Tuple[str, ...]:
+        return self._views_diff.names_missing_in_target_db()
+
+    def number_of_materialized_views_missing_in_target_db(self) -> int:
+        return self._materialized_views_diff.number_of_names_missing_in_target_db()
