@@ -3,7 +3,7 @@ from typing import Dict
 
 from colorama import Fore
 from colorama import init as colorama_init
-from sqlalchemy import create_engine, select
+from sqlalchemy import create_engine, func, select
 from sqlalchemy import MetaData
 from sqlalchemy.orm import Session
 
@@ -48,7 +48,7 @@ def read_record_counts(db_properties: DatabaseProperties) -> Dict[str, int]:
         result = {}
         for name, _ in meta_data.tables.items():
             table = meta_data.tables.get(name)
-            statement = select().select_from(table)
+            statement = select(func.count()).select_from(table)
             record_count = session.execute(statement).scalar()
             if name.startswith(db_properties.schema):
                 tokens = name.split(".")
