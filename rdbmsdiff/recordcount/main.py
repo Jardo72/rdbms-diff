@@ -92,7 +92,7 @@ def read_record_counts(db_properties: DatabaseProperties) -> Dict[str, int]:
                 tokens = name.split(".")
                 name = tokens[1]
             result[name] = record_count
-            print(f"{name} -> {record_count} records")
+            console.print(f"{name} -> {record_count} records")
         return result
 
 
