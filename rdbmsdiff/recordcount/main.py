@@ -1,8 +1,10 @@
 from argparse import ArgumentParser, Namespace, RawTextHelpFormatter
-from typing import Dict
+from dataclasses import dataclass
+from enum import Enum, unique
+from typing import Dict, Optional, Sequence, Tuple
 
-from colorama import Fore
-from colorama import init as colorama_init
+from rich.console import Console
+from rich.table import Table
 from sqlalchemy import create_engine, func, select
 from sqlalchemy import MetaData
 from sqlalchemy.orm import Session
@@ -11,8 +13,43 @@ from rdbmsdiff.foundation import DatabaseProperties
 from rdbmsdiff.foundation import epilog, read_config
 
 
+@unique
+class Status(Enum):
+    OK = 1
+    WARNING = 2
+    ERROR = 3
+
+
+@dataclass(frozen=True, slots=True)
+class ComparisonResult:
+    table: str
+    source_record_count: Optional[int]
+    target_record_count: Optional[int]
+
+    @property
+    def has_missing_record_count(self) -> bool:
+        return self.source_record_count is None or self.target_record_count is None
+
+    @property
+    def source_record_count_as_str(self) -> str:
+        return "N/A" if self.source_record_count is None else str(self.source_record_count)
+
+    @property
+    def target_record_count_as_str(self) -> str:
+        return "N/A" if self.target_record_count is None else str(self.target_record_count)
+
+    @property
+    def status(self) -> Status:
+        if self.has_missing_record_count:
+            return Status.WARNING
+        elif self.source_record_count == self.target_record_count:
+            return Status.OK
+        else:
+            return Status.ERROR
+
+
 def create_cmd_line_args_parser() -> ArgumentParser:
-    parser = ArgumentParser(description="Database Record Count Comparison Tool", formatter_class=RawTextHelpFormatter, epilog=epilog())
+    parser = ArgumentParser(description="RDBMS Record Count Comparison Tool", formatter_class=RawTextHelpFormatter, epilog=epilog())
 
     # positional mandatory arguments
     parser.add_argument(
@@ -39,8 +76,9 @@ def parse_cmd_line_args() -> Namespace:
 
 
 def read_record_counts(db_properties: DatabaseProperties) -> Dict[str, int]:
-    print()
-    print(f"Going to read record counts from {Fore.CYAN}{db_properties.url_without_password}{Fore.RESET}, schema {Fore.CYAN}{db_properties.schema}{Fore.RESET}")
+    console = Console(record=True)
+    console.print()
+    console.print(f"Going to read record counts from [cyan]{db_properties.url_without_password}[/cyan], schema [cyan]{db_properties.schema}[/cyan]")
     engine = create_engine(url=db_properties.url_with_password)
     meta_data = MetaData(schema=db_properties.schema)
     meta_data.reflect(bind=engine)
@@ -58,26 +96,55 @@ def read_record_counts(db_properties: DatabaseProperties) -> Dict[str, int]:
         return result
 
 
-def compare_record_counts(source_record_counts: Dict[str, int], target_record_counts: Dict[str, int]) -> None:
-    # TODO: what about tables present in the source DB, but missing in the target DB?
-    for table in target_record_counts.keys():
-        if table not in source_record_counts:
-            continue
-        source_record_count = source_record_counts[table]
-        target_record_count = target_record_counts[table]
-        if source_record_count == target_record_count:
-            print(f"{Fore.GREEN}{table}: {source_record_count} == {target_record_count}{Fore.RESET}")
-        else:
-            print(f"{Fore.RED}{table}: {source_record_count} != {target_record_count}{Fore.RESET}")
+def compare_record_counts(source_record_counts: Dict[str, int], target_record_counts: Dict[str, int]) -> Tuple[ComparisonResult, ...]:
+    all_tables = set(source_record_counts.keys()).union(set(target_record_counts.keys()))
+    result = []
+    for table in sorted(all_tables):
+        result.append(ComparisonResult(
+            table=table,
+            source_record_count = source_record_counts.get(table, None),
+            target_record_count = target_record_counts.get(table, None),
+        ))
+    return tuple(result)
+
+
+def print_status(status: Status) -> str:
+    if status == Status.OK:
+        return f"[green]{status.name}[/green]"
+    elif status == Status.WARNING:
+        return f"[yellow]{status.name}[/yellow]"
+    else:
+        return f"[red]{status.name}[/red]"
+
+
+def print_comparison_results(comparison_results: Sequence[ComparisonResult]) -> None:
+    console = Console(record=True)
+    table = Table(title="Comparison Results", show_lines=True)
+
+    table.add_column("Table", justify="left")
+    table.add_column("Source DB Record Count", justify="right")
+    table.add_column("Target DB Record Count", justify="right")
+    table.add_column("Status", justify="center")
+
+    for result in comparison_results:
+        table.add_row(
+            result.table,
+            result.source_record_count_as_str,
+            result.target_record_count_as_str,
+            print_status(result.status),
+        )
+
+    console.print()
+    console.print(table)
 
 
 def main() -> None:
-    colorama_init()
     cmd_line_args = parse_cmd_line_args()
     config = read_config(cmd_line_args.config_file, cmd_line_args.ask_for_passwords)
     source_record_counts = read_record_counts(config.source_db_config)
     target_record_counts = read_record_counts(config.target_db_config)
-    compare_record_counts(source_record_counts, target_record_counts)
+    comparison_results = compare_record_counts(source_record_counts, target_record_counts)
+    print_comparison_results(comparison_results)
 
 
 if __name__ == "__main__":
