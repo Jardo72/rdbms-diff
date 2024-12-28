@@ -5,11 +5,11 @@
 ## Schema Comparison
 
 ```
-python -m rdbmsdiff.schema.main
+python -m rdbmsdiff.schema.main <config-file>
 ```
 
 ## Record Count Comparison
 
 ```
-python -m rdbmsdiff.recordcount.main
+python -m rdbmsdiff.recordcount.main <config-file>
 ```
