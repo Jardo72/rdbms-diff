@@ -65,6 +65,12 @@ def create_cmd_line_args_parser() -> ArgumentParser:
         action="store_true",
         help="if specified, the user will be asked for passwords (the passwords will not be read from env. variables)"
     )
+    parser.add_argument(
+        "-o", "--output-html",
+        dest="output_html_file",
+        default=None,
+        help="optional name of an HTML output file the outcome of the comparison is to be written to"
+    )
 
     return parser
  
@@ -76,7 +82,7 @@ def parse_cmd_line_args() -> Namespace:
 
 
 def read_record_counts(db_properties: DatabaseProperties) -> Dict[str, int]:
-    console = Console(record=True)
+    console = Console(record=False, highlight=False)
     console.print()
     console.print(f"Going to read record counts from [cyan]{db_properties.url_without_password}[/cyan], schema [cyan]{db_properties.schema}[/cyan]")
     engine = create_engine(url=db_properties.url_with_password)
@@ -117,9 +123,9 @@ def print_status(status: Status) -> str:
         return f"[red]{status.name}[/red]"
 
 
-def print_comparison_results(comparison_results: Sequence[ComparisonResult]) -> None:
+def print_comparison_results(comparison_results: Sequence[ComparisonResult], output_html_file: str) -> None:
     console = Console(record=True)
-    table = Table(title="Comparison Results", show_lines=True)
+    table = Table(title="Record Count Comparison Results", show_lines=True)
 
     table.add_column("Table", justify="left")
     table.add_column("Source DB Record Count", justify="right")
@@ -136,6 +142,8 @@ def print_comparison_results(comparison_results: Sequence[ComparisonResult]) -> 
 
     console.print()
     console.print(table)
+    if output_html_file:
+        console.save_html(output_html_file)
 
 
 def main() -> None:
@@ -144,7 +152,7 @@ def main() -> None:
     source_record_counts = read_record_counts(config.source_db_config)
     target_record_counts = read_record_counts(config.target_db_config)
     comparison_results = compare_record_counts(source_record_counts, target_record_counts)
-    print_comparison_results(comparison_results)
+    print_comparison_results(comparison_results, cmd_line_args.output_html_file)
 
 
 if __name__ == "__main__":
