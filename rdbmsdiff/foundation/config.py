@@ -104,3 +104,9 @@ Schema = demo_source_schema
 URL = postgresql+psycopg2://masteruser:${password}@localhost:5432/demo_target_db
 Schema = demo_target_schema
 """
+
+
+def handle_configuration_error(e: ReadConfigurationError) -> None:
+    print()
+    print("ERROR!!!")
+    print(e)

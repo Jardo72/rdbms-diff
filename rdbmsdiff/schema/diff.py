@@ -224,6 +224,14 @@ class DBSchemaDiff:
     def number_of_tables_with_incompatible_columns(self) -> int:
         return self._tables_diff.number_of_tables_with_incompatible_columns()
 
+    def tables_with_incompatible_constraints(self) -> Tuple[DBTableDiff, ...]:
+        # TODO
+        ...
+
+    def tables_with_incompatible_indexes(self) -> Tuple[DBTableDiff, ...]:
+        # TODO
+        ...
+
     def sequences_missing_in_source_db(self) -> Tuple[str, ...]:
         return self._sequences_diff.names_missing_in_source_db()
 

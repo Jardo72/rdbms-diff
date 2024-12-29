@@ -2,13 +2,15 @@ from argparse import ArgumentParser, Namespace, RawTextHelpFormatter
 
 from colorama import init as colorama_init, Fore
 
-from rdbmsdiff.foundation import epilog, read_config
+from rdbmsdiff.foundation import ReadConfigurationError
+from rdbmsdiff.foundation import epilog, handle_configuration_error, read_config
 from .diff import DBSchemaDiff
 from .metadata import read_db_meta_data
+from .report import write_report
 
 
 def create_cmd_line_args_parser() -> ArgumentParser:
-    parser = ArgumentParser(description="Database Schema Comparison Tool", formatter_class=RawTextHelpFormatter, epilog=epilog())
+    parser = ArgumentParser(description="RDBMS Schema Comparison Tool", formatter_class=RawTextHelpFormatter, epilog=epilog())
 
     # positional mandatory arguments
     parser.add_argument(
@@ -62,11 +64,17 @@ def print_summary(db_schema_diff: DBSchemaDiff) -> None:
 
 
 def main() -> None:
-    colorama_init()
-    cmd_line_args = parse_cmd_line_args()
-    config = read_config(cmd_line_args.config_file, cmd_line_args.ask_for_passwords)
-    source_meta_data = read_db_meta_data(config.source_db_config)
-    target_meta_data = read_db_meta_data(config.target_db_config)
+    try:
+        colorama_init()
+        cmd_line_args = parse_cmd_line_args()
+        config = read_config(cmd_line_args.config_file, cmd_line_args.ask_for_passwords)
+        source_meta_data = read_db_meta_data(config.source_db_config)
+        target_meta_data = read_db_meta_data(config.target_db_config)
+        schema_diff = DBSchemaDiff(source_schema=source_meta_data, target_schema=target_meta_data)
+        write_report(schema_diff, cmd_line_args.diff_report)
+        print_summary(schema_diff)
+    except ReadConfigurationError as e:
+        handle_configuration_error(e)
 
 
 if __name__ == "__main__":

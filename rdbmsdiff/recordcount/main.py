@@ -10,7 +10,7 @@ from sqlalchemy import MetaData
 from sqlalchemy.orm import Session
 
 from rdbmsdiff.foundation import DatabaseProperties, ReadConfigurationError
-from rdbmsdiff.foundation import epilog, read_config
+from rdbmsdiff.foundation import epilog, handle_configuration_error, read_config
 
 
 @unique
@@ -156,9 +156,7 @@ def main() -> None:
         comparison_results = compare_record_counts(source_record_counts, target_record_counts)
         print_comparison_results(comparison_results, cmd_line_args.output_html_file)
     except ReadConfigurationError as e:
-        print()
-        print("ERROR!!!")
-        print(e)
+        handle_configuration_error(e)
 
 
 if __name__ == "__main__":

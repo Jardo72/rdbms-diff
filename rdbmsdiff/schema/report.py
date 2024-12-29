@@ -3,14 +3,21 @@ from typing import Any, Dict, Sequence
 
 from colorama import Fore
 
-from .diff import DBSchemaDiff, DBTableDiff
+from .diff import DBColumnDiff, DBSchemaDiff, DBTableDiff
 
+
+def _convert_column_diff(column_diff: DBColumnDiff) -> Dict[str, Any]:
+    return {
+        "name": column_diff.name,
+        "source_data_type": str(column_diff.source_data_type),
+        "target_data_type": str(column_diff.target_data_type),
+    }
 
 
 def _convert_tables_with_incompatible_columns(table_diff_list: Sequence[DBTableDiff]) -> Dict[str, Any]:
     result = {}
     for table_diff in table_diff_list:
-        columns_with_distinct_data_type = list(map(convert_column_diff, table_diff.columns_with_distinct_data_type))
+        columns_with_distinct_data_type = list(map(_convert_column_diff, table_diff.columns_with_distinct_data_type))
         result[table_diff.name] = {
             "columns_missing_in_source_database": table_diff.columns_missing_in_source_db,
             "columns_missing_in_target_database": table_diff.columns_missing_in_target_db,
@@ -19,9 +26,6 @@ def _convert_tables_with_incompatible_columns(table_diff_list: Sequence[DBTableD
     return result
 
  
-
- 
-
 def _convert_tables_with_incompatible_constraints(table_diff_list: Sequence[DBTableDiff]) -> Dict[str, Any]:
     result = {}
     for table_diff in table_diff_list:
@@ -30,7 +34,6 @@ def _convert_tables_with_incompatible_constraints(table_diff_list: Sequence[DBTa
             "constraints_missing_in_target_db": table_diff.constraints_missing_in_target_db,
         }
     return result
-
 
 
 def _convert_tables_with_incompatible_indexes(table_diff_list: Sequence[DBTableDiff]) -> Dict[str, Any]:
