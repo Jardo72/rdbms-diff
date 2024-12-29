@@ -9,7 +9,7 @@ from sqlalchemy import create_engine, func, select
 from sqlalchemy import MetaData
 from sqlalchemy.orm import Session
 
-from rdbmsdiff.foundation import DatabaseProperties
+from rdbmsdiff.foundation import DatabaseProperties, ReadConfigurationError
 from rdbmsdiff.foundation import epilog, read_config
 
 
@@ -148,12 +148,17 @@ def print_comparison_results(comparison_results: Sequence[ComparisonResult], out
 
 
 def main() -> None:
-    cmd_line_args = parse_cmd_line_args()
-    config = read_config(cmd_line_args.config_file, cmd_line_args.ask_for_passwords)
-    source_record_counts = read_record_counts(config.source_db_config)
-    target_record_counts = read_record_counts(config.target_db_config)
-    comparison_results = compare_record_counts(source_record_counts, target_record_counts)
-    print_comparison_results(comparison_results, cmd_line_args.output_html_file)
+    try:
+        cmd_line_args = parse_cmd_line_args()
+        config = read_config(cmd_line_args.config_file, cmd_line_args.ask_for_passwords)
+        source_record_counts = read_record_counts(config.source_db_config)
+        target_record_counts = read_record_counts(config.target_db_config)
+        comparison_results = compare_record_counts(source_record_counts, target_record_counts)
+        print_comparison_results(comparison_results, cmd_line_args.output_html_file)
+    except ReadConfigurationError as e:
+        print()
+        print("ERROR!!!")
+        print(e)
 
 
 if __name__ == "__main__":
