@@ -114,13 +114,14 @@ def compare_record_counts(source_record_counts: Dict[str, int], target_record_co
     return tuple(result)
 
 
-def print_status(status: Status) -> str:
-    if status == Status.OK:
-        return f"[green]{status.name}[/green]"
-    elif status == Status.WARNING:
-        return f"[yellow]{status.name}[/yellow]"
+def format_status(status: Status) -> str:
+    if status is Status.OK:
+        color = "green"
+    elif status is Status.WARNING:
+        color = "yellow"
     else:
-        return f"[red]{status.name}[/red]"
+        color = "red"
+    return f"[bold][{color}]{status.name}[/{color}][/bold]"
 
 
 def print_comparison_results(comparison_results: Sequence[ComparisonResult], output_html_file: str) -> None:
@@ -137,7 +138,7 @@ def print_comparison_results(comparison_results: Sequence[ComparisonResult], out
             result.table,
             result.source_record_count_as_str,
             result.target_record_count_as_str,
-            print_status(result.status),
+            format_status(result.status),
         )
 
     console.print()
