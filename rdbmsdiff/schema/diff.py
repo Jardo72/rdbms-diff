@@ -228,7 +228,15 @@ class DBSchemaDiff:
         # TODO
         ...
 
+    def number_of_tables_with_incompatible_constraints(self) -> int:
+        # TODO
+        ...
+
     def tables_with_incompatible_indexes(self) -> Tuple[DBTableDiff, ...]:
+        # TODO
+        ...
+
+    def number_of_tables_with_incompatible_indexes(self) -> int:
         # TODO
         ...
 
