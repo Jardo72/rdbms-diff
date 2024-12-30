@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Any, Optional, Sequence, Set, Tuple
+from typing import Any, Optional, Sequence, Tuple
 
 from .metadata import DBSchema, DBTable
 
@@ -135,13 +135,13 @@ class DBTablesDiff:
         return tuple(source_tables.intersection(target_tables))
 
     def _compare_columns(self, source_table: DBTable, target_table: DBTable) -> Optional[DBTableColumnsDiff]:
-        source_column_names = source_table.column_names_as_set()
-        target_column_names = target_table.column_names_as_set()
+        source_column_names = source_table.column_names_as_set
+        target_column_names = target_table.column_names_as_set
         columns_missing_in_source_db = target_column_names - source_column_names
         columns_missing_in_target_db = source_column_names - target_column_names
 
-        source_columns = source_table.columns_as_dict()
-        target_columns = target_table.columns_as_dict()
+        source_columns = source_table.columns_as_dict
+        target_columns = target_table.columns_as_dict
         distinct_type_columns = []
         for column_name in source_column_names.intersection(target_column_names):
             source_column = source_columns[column_name]
@@ -225,20 +225,24 @@ class DBSchemaDiff:
         return self._tables_diff.number_of_tables_with_incompatible_columns()
 
     def tables_with_incompatible_constraints(self) -> Tuple[DBTableDiff, ...]:
-        # TODO
+        # TODO: missing implementation
         ...
+        return tuple()
 
     def number_of_tables_with_incompatible_constraints(self) -> int:
-        # TODO
+        # TODO: missing implementation
         ...
+        return 0
 
     def tables_with_incompatible_indexes(self) -> Tuple[DBTableDiff, ...]:
-        # TODO
+        # TODO: missing implementation
         ...
+        return tuple()
 
     def number_of_tables_with_incompatible_indexes(self) -> int:
-        # TODO
+        # TODO: missing implementation
         ...
+        return 0
 
     def sequences_missing_in_source_db(self) -> Tuple[str, ...]:
         return self._sequences_diff.names_missing_in_source_db()
