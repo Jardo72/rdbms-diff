@@ -178,6 +178,34 @@ class DBTablesDiff:
         else:
             return None
 
+    def _compare_constraints(self, source_table: DBTable, target_table: DBTable) -> Optional[DBTableEnhancementsDiff]:
+        source_constraint_names = source_table.constraint_names_as_set
+        target_constraint_names = target_table.constraint_names_as_set
+        constraints_missing_in_source_db = target_constraint_names - source_constraint_names
+        constraints_missing_in_target_db = source_constraint_names - target_constraint_names
+
+        if len(constraints_missing_in_source_db) == 0 and len(constraints_missing_in_target_db) == 0:
+            return None
+
+        return DBTableEnhancementsDiff(
+            names_missing_in_source_db=tuple(constraints_missing_in_source_db),
+            names_missing_in_target_db=tuple(constraints_missing_in_target_db),
+        )
+
+    def _compare_indexes(self, source_table: DBTable, target_table: DBTable) -> Optional[DBTableEnhancementsDiff]:
+        source_index_names = source_table.index_names_as_set
+        target_index_names = target_table.index_names_as_set
+        indexes_missing_in_source_db = target_index_names - source_index_names
+        indexes_missing_in_target_db = source_index_names - target_index_names
+
+        if len(indexes_missing_in_source_db) == 0 and len(indexes_missing_in_target_db) == 0:
+            return None
+ 
+        return DBTableEnhancementsDiff(
+            names_missing_in_source_db=tuple(indexes_missing_in_source_db),
+            names_missing_in_target_db=tuple(indexes_missing_in_target_db),
+        )
+
 
 class _NamesDiff:
 
@@ -254,7 +282,7 @@ class DBSchemaDiff:
         return self._sequences_diff.names_missing_in_target_db()
  
     def number_of_sequences_missing_in_target_db(self) -> int:
-        return self._sequences_diff.names_missing_in_target_db()
+        return self._sequences_diff.number_of_names_missing_in_target_db()
 
     def views_missing_in_source_db(self) -> Tuple[str, ...]:
         return self._views_diff.names_missing_in_source_db()
