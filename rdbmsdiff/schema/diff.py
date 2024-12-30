@@ -129,6 +129,28 @@ class DBTablesDiff:
     def number_of_tables_with_incompatible_columns(self) -> int:
         return len(self.tables_with_incompatible_columns())
 
+    def tables_with_incompatible_indexes(self) -> Tuple[DBTableDiff, ...]:
+        result = []
+        for table_name in self._common_tables():
+            table_diff = self._compare_tables(self._source_db_tables[table_name], self._target_db_tables[table_name])
+            if table_diff and table_diff.has_index_discrepancies():
+                result.append(table_diff)
+        return tuple(result)
+
+    def number_of_tables_with_incompatible_indexes(self) -> int:
+        return len(self.tables_with_incompatible_indexes())
+
+    def tables_with_incompatible_constraints(self) -> Tuple[DBTableDiff, ...]:
+        result = []
+        for table_name in self._common_tables():
+            table_diff = self._compare_tables(self._source_db_tables[table_name], self._target_db_tables[table_name])
+            if table_diff and table_diff.has_constraint_discrepancies():
+                result.append(table_diff)
+        return tuple(result)
+
+    def number_of_tables_with_incompatible_constraints(self) -> int:
+        return len(self.tables_with_incompatible_constraints())
+
     def _common_tables(self) -> Tuple[str, ...]:
         source_tables = set(self._source_db_tables.keys())
         target_tables = set(self._target_db_tables.keys())
@@ -253,24 +275,16 @@ class DBSchemaDiff:
         return self._tables_diff.number_of_tables_with_incompatible_columns()
 
     def tables_with_incompatible_constraints(self) -> Tuple[DBTableDiff, ...]:
-        # TODO: missing implementation
-        ...
-        return tuple()
+        return self._tables_diff.tables_with_incompatible_constraints()
 
     def number_of_tables_with_incompatible_constraints(self) -> int:
-        # TODO: missing implementation
-        ...
-        return 0
+        return self._tables_diff.number_of_tables_with_incompatible_constraints()
 
     def tables_with_incompatible_indexes(self) -> Tuple[DBTableDiff, ...]:
-        # TODO: missing implementation
-        ...
-        return tuple()
+        return self._tables_diff.tables_with_incompatible_indexes()
 
     def number_of_tables_with_incompatible_indexes(self) -> int:
-        # TODO: missing implementation
-        ...
-        return 0
+        return self._tables_diff.number_of_tables_with_incompatible_indexes()
 
     def sequences_missing_in_source_db(self) -> Tuple[str, ...]:
         return self._sequences_diff.names_missing_in_source_db()
