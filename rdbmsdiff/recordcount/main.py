@@ -1,3 +1,4 @@
+from __future__ import annotations
 from argparse import ArgumentParser, Namespace, RawTextHelpFormatter
 from dataclasses import dataclass
 from enum import Enum, unique
@@ -13,11 +14,23 @@ from rdbmsdiff.foundation import DatabaseProperties, ReadConfigurationError
 from rdbmsdiff.foundation import epilog, handle_configuration_error, read_config
 
 
+# TODO:
+# it might make sense to move this to foundation
 @unique
 class Status(Enum):
     OK = 1
     WARNING = 2
     ERROR = 3
+
+    @staticmethod
+    def format(status: Status) -> str:
+        if status is Status.OK:
+            color = "green"
+        elif status is Status.WARNING:
+            color = "yellow"
+        else:
+            color = "red"
+        return f"[bold][{color}]{status.name}[/{color}][/bold]"
 
 
 @dataclass(frozen=True, slots=True)
@@ -114,16 +127,6 @@ def compare_record_counts(source_record_counts: Dict[str, int], target_record_co
     return tuple(result)
 
 
-def format_status(status: Status) -> str:
-    if status is Status.OK:
-        color = "green"
-    elif status is Status.WARNING:
-        color = "yellow"
-    else:
-        color = "red"
-    return f"[bold][{color}]{status.name}[/{color}][/bold]"
-
-
 def print_comparison_results(comparison_results: Sequence[ComparisonResult], output_html_file: str) -> None:
     console = Console(record=True)
     table = Table(title="Record Count Comparison Results", show_lines=True)
@@ -138,7 +141,7 @@ def print_comparison_results(comparison_results: Sequence[ComparisonResult], out
             result.table,
             result.source_record_count_as_str,
             result.target_record_count_as_str,
-            format_status(result.status),
+            Status.format(result.status),
         )
 
     console.print()
