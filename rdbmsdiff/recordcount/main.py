@@ -1,7 +1,5 @@
-from __future__ import annotations
 from argparse import ArgumentParser, Namespace, RawTextHelpFormatter
 from dataclasses import dataclass
-from enum import Enum, unique
 from typing import Dict, Optional, Sequence, Tuple
 
 from rich.console import Console
@@ -10,27 +8,8 @@ from sqlalchemy import create_engine, func, select
 from sqlalchemy import MetaData
 from sqlalchemy.orm import Session
 
-from rdbmsdiff.foundation import DatabaseProperties, ReadConfigurationError
+from rdbmsdiff.foundation import DatabaseProperties, ReadConfigurationError, Status
 from rdbmsdiff.foundation import epilog, handle_configuration_error, read_config
-
-
-# TODO:
-# it might make sense to move this to foundation
-@unique
-class Status(Enum):
-    OK = 1
-    WARNING = 2
-    ERROR = 3
-
-    @staticmethod
-    def format(status: Status) -> str:
-        if status is Status.OK:
-            color = "green"
-        elif status is Status.WARNING:
-            color = "yellow"
-        else:
-            color = "red"
-        return f"[bold][{color}]{status.name}[/{color}][/bold]"
 
 
 @dataclass(frozen=True, slots=True)
