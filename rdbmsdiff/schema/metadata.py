@@ -11,6 +11,7 @@ from rdbmsdiff.foundation import DatabaseProperties
 class DBColumn:
     name: str
     datatype: Any
+    nullable: bool
 
 
 @dataclass(frozen=True, slots=True)
@@ -89,7 +90,7 @@ class _MetaDataReader:
                 name = tokens[1]
             table_meta_info = DBTable(
                 name=name,
-                columns=tuple(map(lambda c: DBColumn(name=c.name, datatype=c.type), details.columns)),
+                columns=tuple(map(lambda c: DBColumn(name=c.name, datatype=c.type, nullable=c.nullable), details.columns)),
                 constraints=tuple([constraint.name for constraint in details.constraints]),
                 indexes=tuple([index.name for index in details.indexes])
             )
@@ -130,6 +131,6 @@ def read_db_meta_data(db_properties: DatabaseProperties) -> DBSchema:
     print()
     print(f"Going to read meta-info from {Fore.CYAN}{db_properties.url_without_password}{Fore.RESET}, schema {Fore.CYAN}{db_properties.schema}{Fore.RESET}")
 
-    # chances are we should take care about closing the reader
+    # TODO: chances are we should take care about closing the reader
     reader = _MetaDataReader(db_properties)
     return reader.read_meta_data()
