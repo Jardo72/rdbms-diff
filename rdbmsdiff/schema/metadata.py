@@ -88,6 +88,8 @@ class _MetaDataReader:
             if name.startswith(self._db_properties.schema):
                 tokens = name.split(".")
                 name = tokens[1]
+            for constraint in details.constraints:
+                print(type(constraint))
             table_meta_info = DBTable(
                 name=name,
                 columns=tuple(map(lambda c: DBColumn(name=c.name, datatype=c.type, nullable=c.nullable), details.columns)),

@@ -1,7 +1,11 @@
 from argparse import ArgumentParser, Namespace, RawTextHelpFormatter
 
+from colorama import init as colorama_init
+
 from rdbmsdiff.foundation import ReadConfigurationError
 from rdbmsdiff.foundation import epilog, handle_configuration_error, read_config
+
+from .metadata import read_db_meta_data
 
 
 def create_cmd_line_args_parser() -> ArgumentParser:
@@ -37,8 +41,11 @@ def parse_cmd_line_args() -> Namespace:
 
 def main() -> None:
     try:
+        colorama_init()
         cmd_line_args = parse_cmd_line_args()
         config = read_config(cmd_line_args.config_file, cmd_line_args.ask_for_passwords)
+        source_meta_data = read_db_meta_data(config.source_db_config)
+        target_meta_data = read_db_meta_data(config.target_db_config)
     except ReadConfigurationError as e:
         handle_configuration_error(e)
 
