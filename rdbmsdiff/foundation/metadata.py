@@ -5,7 +5,7 @@ from colorama import Fore
 from sqlalchemy import create_engine, inspect, MetaData
 from sqlalchemy.sql.schema import CheckConstraint, ForeignKeyConstraint, PrimaryKeyConstraint, UniqueConstraint
 
-from rdbmsdiff.foundation import DatabaseProperties
+from .config import DatabaseProperties
 
 
 @dataclass(frozen=True, slots=True)
@@ -19,9 +19,13 @@ class DBColumn:
 class DBTable:
     name: str
     columns: Tuple[DBColumn, ...]
-    constraints: Tuple[str, ...]
+    check_constraints: Tuple[CheckConstraint, ...]
+    unique_constraints: Tuple[UniqueConstraint, ...]
+    # TODO: I think there can only be one PK per table
+    primary_key_constraints: Tuple[PrimaryKeyConstraint, ...]
+    foreign_key_constraints: Tuple[ForeignKeyConstraint, ...]
     indexes: Tuple[str, ...]
- 
+
     @property
     def columns_as_dict(self) -> Dict[str, DBColumn]:
         result = {}
@@ -30,29 +34,13 @@ class DBTable:
         return result
 
     @property
-    def column_count(self) -> int:
-        return len(self.columns)
-
-    @property
-    def constraint_count(self) -> int:
-        return len(self.constraints)
-
-    @property
-    def index_count(self) -> int:
-        return len(self.indexes)
-
-    @property
     def column_names_as_set(self) -> Set[str]:
         return set([column.name for column in self.columns])
 
     @property
-    def constraint_names_as_set(self) -> Set[str]:
-        return set(self.constraints)
+    def column_count(self) -> int:
+        return len(self.columns)
 
-    @property
-    def index_names_as_set(self) -> Set[str]:
-        return set(self.indexes)
-    
 
 @dataclass(frozen=True, slots=True)
 class DBSchema:
@@ -89,16 +77,17 @@ class _MetaDataReader:
             if name.startswith(self._db_properties.schema):
                 tokens = name.split(".")
                 name = tokens[1]
-            for constraint in details.constraints:
-                print(type(constraint))
             table_meta_info = DBTable(
                 name=name,
                 columns=tuple(map(lambda c: DBColumn(name=c.name, datatype=c.type, nullable=c.nullable), details.columns)),
-                constraints=tuple([constraint.name for constraint in details.constraints]),
+                check_constraints=tuple([constraint for constraint in details.constraints if isinstance(constraint, CheckConstraint)]),
+                unique_constraints=tuple([constraint for constraint in details.constraints if isinstance(constraint, UniqueConstraint)]),
+                primary_key_constraints=tuple([constraint for constraint in details.constraints if isinstance(constraint, PrimaryKeyConstraint)]),
+                foreign_key_constraints=tuple([constraint for constraint in details.constraints if isinstance(constraint, ForeignKeyConstraint)]),
                 indexes=tuple([index.name for index in details.indexes])
             )
             tables.append(table_meta_info)
-            print(f"{name}: {table_meta_info.column_count} columns/{table_meta_info.constraint_count} constraints/{table_meta_info.index_count} indexes")
+            # print(f"{name}: {table_meta_info.column_count} columns/{table_meta_info.constraint_count} constraints/{table_meta_info.index_count} indexes")
         print(f"Totally {len(tables)} tables")
         return tuple(tables)
 
