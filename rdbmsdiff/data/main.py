@@ -5,7 +5,7 @@ from rdbmsdiff.foundation import epilog, handle_configuration_error, read_config
 
 
 def create_cmd_line_args_parser() -> ArgumentParser:
-    parser = ArgumentParser(description="RDBMS Schema Comparison Tool", formatter_class=RawTextHelpFormatter, epilog=epilog())
+    parser = ArgumentParser(description="RDBMS Data Comparison Tool", formatter_class=RawTextHelpFormatter, epilog=epilog())
 
     # positional mandatory arguments
     parser.add_argument(
