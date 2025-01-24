@@ -1,6 +1,8 @@
 from argparse import ArgumentParser, Namespace, RawTextHelpFormatter
 
-from rdbmsdiff.foundation import ReadConfigurationError
+from sqlalchemy.sql.sqltypes import BIGINT, BOOLEAN, DOUBLE, FLOAT, INTEGER, SMALLINT, VARCHAR
+
+from rdbmsdiff.foundation import DBColumn, DBSchema, ReadConfigurationError
 from rdbmsdiff.foundation import epilog, handle_configuration_error, read_config, read_db_meta_data
 
 
@@ -35,12 +37,38 @@ def parse_cmd_line_args() -> Namespace:
     return params
 
 
+def is_numeric(column: DBColumn) -> bool:
+    return (
+        isinstance(column.datatype, SMALLINT) or
+        isinstance(column.datatype, INTEGER) or
+        isinstance(column.datatype, BIGINT) or
+        isinstance(column.datatype, FLOAT) or
+        isinstance(column.datatype, DOUBLE)
+    )
+
+
+def introspect(db_meta_data: DBSchema) -> None:
+    for table in db_meta_data.tables:
+        print()
+        print(table.name)
+        for column in table.columns:
+            if is_numeric(column):
+                print(f"{column.name} -> numeric")
+            elif isinstance(column.datatype, VARCHAR):
+                print(f"{column.name} -> varchar")
+            elif isinstance(column.datatype, BOOLEAN):
+                print(f"{column.name} -> boolean")
+            if column.nullable:
+                print(f"{column.name} is nullable")
+
+
 def main() -> None:
     try:
         cmd_line_args = parse_cmd_line_args()
         config = read_config(cmd_line_args.config_file, cmd_line_args.ask_for_passwords)
         source_meta_data = read_db_meta_data(config.source_db_config)
         target_meta_data = read_db_meta_data(config.target_db_config)
+        introspect(source_meta_data)
     except ReadConfigurationError as e:
         handle_configuration_error(e)
 
