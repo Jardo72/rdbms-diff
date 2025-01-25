@@ -2,8 +2,11 @@ from argparse import ArgumentParser, Namespace, RawTextHelpFormatter
 
 from sqlalchemy.sql.sqltypes import BIGINT, BOOLEAN, DOUBLE, FLOAT, INTEGER, SMALLINT, VARCHAR
 
-from rdbmsdiff.foundation import DBColumn, DBSchema, ReadConfigurationError
+from rdbmsdiff.foundation import Configuration, DBColumn, DBSchema, ReadConfigurationError
 from rdbmsdiff.foundation import epilog, handle_configuration_error, read_config, read_db_meta_data
+
+from .numeric_validator import NumericValidator
+from .varchar_validator import VarcharValidator
 
 
 def create_cmd_line_args_parser() -> ArgumentParser:
@@ -47,15 +50,18 @@ def is_numeric(column: DBColumn) -> bool:
     )
 
 
-def introspect(db_meta_data: DBSchema) -> None:
+def introspect(config: Configuration, db_meta_data: DBSchema) -> None:
     for table in db_meta_data.tables:
         print()
         print(table.name)
         for column in table.columns:
             if is_numeric(column):
                 print(f"{column.name} -> numeric")
+                validator = NumericValidator(config, table, column)
+                validator.validate()
             elif isinstance(column.datatype, VARCHAR):
                 print(f"{column.name} -> varchar")
+                validator = VarcharValidator(config, table, column)
             elif isinstance(column.datatype, BOOLEAN):
                 print(f"{column.name} -> boolean")
             if column.nullable:
@@ -68,7 +74,7 @@ def main() -> None:
         config = read_config(cmd_line_args.config_file, cmd_line_args.ask_for_passwords)
         source_meta_data = read_db_meta_data(config.source_db_config)
         target_meta_data = read_db_meta_data(config.target_db_config)
-        introspect(source_meta_data)
+        introspect(config, source_meta_data)
     except ReadConfigurationError as e:
         handle_configuration_error(e)
 
