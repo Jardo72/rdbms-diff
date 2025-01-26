@@ -1,8 +1,10 @@
 from abc import ABC
 from abc import abstractmethod
+from typing import Any, Sequence
 
 from sqlalchemy import create_engine
 from sqlalchemy import Engine, MetaData
+from sqlalchemy.engine import Row
 
 from rdbmsdiff.foundation import Configuration, DatabaseProperties, DBColumn, DBTable
 
@@ -56,3 +58,11 @@ class AbstractValidator(ABC):
     @abstractmethod
     def _select(self, db_properties: DatabaseProperties) -> ValidationQuery:
         ...
+
+    @staticmethod
+    def format_rows(rows: Sequence[Row[Any]]) -> str:
+        result = ""
+        for single_row in rows:
+            result += str(single_row) + "\n"
+        result += "\n"
+        return result

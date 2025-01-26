@@ -18,5 +18,5 @@ class VarcharValidator(AbstractValidator):
             result = session.execute(text(statement)).all()
             return ValidationQuery(
                 sql=statement,
-                result_set=str(result)
+                result_set=self.format_rows(result)
             )

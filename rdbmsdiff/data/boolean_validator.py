@@ -1,3 +1,4 @@
+from sqlalchemy import text
 from sqlalchemy.orm import Session
 
 from rdbmsdiff.foundation import Configuration, DatabaseProperties, DBColumn, DBTable
@@ -13,4 +14,9 @@ class BooleanValidator(AbstractValidator):
     def _select(self, db_properties: DatabaseProperties) -> ValidationQuery:
         engine = self.create_engine(db_properties)
         with Session(engine) as session:
-            ...
+            statement = f"SELECT {self.column_name}, COUNT({self.column_name}) FROM {self.table_name} GROUP BY {self.column_name} ORDER BY {self.column_name} ASC"
+            result = session.execute(text(statement)).all()
+            return ValidationQuery(
+                sql=statement,
+                result_set=self.format_rows(result)
+            )
