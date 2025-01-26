@@ -6,7 +6,7 @@ from .abstract_validator import AbstractValidator
 from .validation_details import ValidationQuery
 
 
-class VarcharValidator(AbstractValidator):
+class VarcharLengthValidator(AbstractValidator):
 
     def __init__(self, config: Configuration, table: DBTable, column: DBColumn) -> None:
         super().__init__(config, table, column)

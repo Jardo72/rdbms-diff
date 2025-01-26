@@ -7,7 +7,7 @@ from rdbmsdiff.foundation import epilog, handle_configuration_error, read_config
 
 from .boolean_validator import BooleanValidator
 from .numeric_validator import NumericValidator
-from .varchar_validator import VarcharValidator
+from .varchar_length_validator import VarcharLengthValidator
 
 
 def create_cmd_line_args_parser() -> ArgumentParser:
@@ -72,7 +72,7 @@ def introspect(config: Configuration, db_meta_data: DBSchema) -> None:
                 print(f"Result\n{result}")
             elif is_string(column):
                 print(f"{column.name} -> string")
-                validator = VarcharValidator(config, table, column)
+                validator = VarcharLengthValidator(config, table, column)
                 result = validator.validate()
                 print(f"Result\n{result}")
             elif isinstance(column.datatype, BOOLEAN):
