@@ -1,7 +1,6 @@
-
-from rdbmsdiff.foundation import Configuration, DBColumn, DBTable
-
+from rdbmsdiff.foundation import Configuration, DatabaseProperties, DBColumn, DBTable
 from .abstract_validator import AbstractValidator
+from .validation_details import ValidationQuery
 
 
 class VarcharValidator(AbstractValidator):
@@ -9,6 +8,6 @@ class VarcharValidator(AbstractValidator):
     def __init__(self, config: Configuration, table: DBTable, column: DBColumn) -> None:
         super().__init__(config, table, column)
 
-    def validate(self) -> None:
-        # engine = self.create_engine(db_properties)
+    def _select(self, db_properties: DatabaseProperties) -> ValidationQuery:
+        engine = self.create_engine(db_properties)
         ...

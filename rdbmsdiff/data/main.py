@@ -5,6 +5,7 @@ from sqlalchemy.sql.sqltypes import BIGINT, BOOLEAN, DOUBLE, FLOAT, INTEGER, SMA
 from rdbmsdiff.foundation import Configuration, DBColumn, DBSchema, ReadConfigurationError
 from rdbmsdiff.foundation import epilog, handle_configuration_error, read_config, read_db_meta_data
 
+from .boolean_validator import BooleanValidator
 from .numeric_validator import NumericValidator
 from .varchar_validator import VarcharValidator
 
@@ -40,6 +41,7 @@ def parse_cmd_line_args() -> Namespace:
     return params
 
 
+# TODO: this might be moved to DBColumn
 def is_numeric(column: DBColumn) -> bool:
     return (
         isinstance(column.datatype, SMALLINT) or
@@ -58,12 +60,17 @@ def introspect(config: Configuration, db_meta_data: DBSchema) -> None:
             if is_numeric(column):
                 print(f"{column.name} -> numeric")
                 validator = NumericValidator(config, table, column)
-                validator.validate()
+                result = validator.validate()
+                print(f"Validator = {validator.description}")
+                print(f"Result\n{result}")
             elif isinstance(column.datatype, VARCHAR):
                 print(f"{column.name} -> varchar")
                 validator = VarcharValidator(config, table, column)
+                # TODO: validator.validate()
             elif isinstance(column.datatype, BOOLEAN):
                 print(f"{column.name} -> boolean")
+                validator = BooleanValidator(config, table, column)
+                # TODO: validator.validate()
             if column.nullable:
                 print(f"{column.name} is nullable")
 
