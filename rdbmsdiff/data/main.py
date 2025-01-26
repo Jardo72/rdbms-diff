@@ -6,6 +6,7 @@ from rdbmsdiff.foundation import Configuration, DBColumn, DBSchema, ReadConfigur
 from rdbmsdiff.foundation import epilog, handle_configuration_error, read_config, read_db_meta_data
 
 from .boolean_validator import BooleanValidator
+from .null_value_count_validator import NullValueCheckType, NullValueCountValidator
 from .numeric_validator import NumericValidator
 from .varchar_length_validator import VarcharLengthValidator
 
@@ -78,9 +79,16 @@ def introspect(config: Configuration, db_meta_data: DBSchema) -> None:
             elif isinstance(column.datatype, BOOLEAN):
                 print(f"{column.name} -> boolean")
                 validator = BooleanValidator(config, table, column)
-                # TODO: validator.validate()
+                result = validator.validate()
+                print(f"Result\n{result}")
             if column.nullable:
                 print(f"{column.name} is nullable")
+                validator = NullValueCountValidator(config, table, column, NullValueCheckType.IS_NULL)
+                result = validator.validate()
+                print(f"Result\n{result}")
+                validator = NullValueCountValidator(config, table, column, NullValueCheckType.IS_NOT_NULL)
+                result = validator.validate()
+                print(f"Result\n{result}")
 
 
 def main() -> None:
