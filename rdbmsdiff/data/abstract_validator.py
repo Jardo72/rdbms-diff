@@ -2,7 +2,7 @@ from abc import ABC
 from abc import abstractmethod
 
 from sqlalchemy import create_engine
-from sqlalchemy import MetaData
+from sqlalchemy import Engine, MetaData
 
 from rdbmsdiff.foundation import Configuration, DatabaseProperties, DBColumn, DBTable
 
@@ -17,7 +17,7 @@ class AbstractValidator(ABC):
         self._table = table
         self._column = column
 
-    def create_engine(self, db_properties: DatabaseProperties):
+    def create_engine(self, db_properties: DatabaseProperties) -> Engine:
         engine = create_engine(url=db_properties.url_with_password)
         meta_data = MetaData(schema=db_properties.schema)
         meta_data.reflect(bind=engine)
@@ -48,6 +48,7 @@ class AbstractValidator(ABC):
         target_query_details = self._select(self.target_db_config)
         return ValidationDetails(
             result=ValidationResult.PASSED if source_query_details.result_set == target_query_details.result_set else ValidationResult.FAILED,
+            validator_description=self.description,
             source_query_details=source_query_details,
             target_query_details=target_query_details,
         )
