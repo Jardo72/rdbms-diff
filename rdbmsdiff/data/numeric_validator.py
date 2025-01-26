@@ -15,7 +15,6 @@ class NumericValidator(AbstractValidator):
         engine = self.create_engine(db_properties)
         with Session(engine) as session:
             statement = f"SELECT MIN({self.column_name}), MAX({self.column_name}), AVG({self.column_name}), SUM({self.column_name}) FROM {self.table_name}"
-            print(statement)
             result = session.execute(text(statement)).first()
             return ValidationQuery(
                 sql=statement,

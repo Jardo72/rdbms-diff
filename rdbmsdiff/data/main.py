@@ -1,6 +1,6 @@
 from argparse import ArgumentParser, Namespace, RawTextHelpFormatter
 
-from sqlalchemy.sql.sqltypes import BIGINT, BOOLEAN, DOUBLE, FLOAT, INTEGER, SMALLINT, VARCHAR
+from sqlalchemy.sql.sqltypes import BIGINT, BOOLEAN, DOUBLE, FLOAT, INTEGER, SMALLINT, TEXT, VARCHAR
 
 from rdbmsdiff.foundation import Configuration, DBColumn, DBSchema, ReadConfigurationError
 from rdbmsdiff.foundation import epilog, handle_configuration_error, read_config, read_db_meta_data
@@ -52,6 +52,14 @@ def is_numeric(column: DBColumn) -> bool:
     )
 
 
+# TODO: this might be moved to DBColumn
+def is_string(column: DBColumn) -> bool:
+    return (
+        isinstance(column.datatype, VARCHAR) or
+        isinstance(column.datatype, TEXT)
+    )
+
+
 def introspect(config: Configuration, db_meta_data: DBSchema) -> None:
     for table in db_meta_data.tables:
         print()
@@ -61,12 +69,12 @@ def introspect(config: Configuration, db_meta_data: DBSchema) -> None:
                 print(f"{column.name} -> numeric")
                 validator = NumericValidator(config, table, column)
                 result = validator.validate()
-                print(f"Validator = {validator.description}")
                 print(f"Result\n{result}")
-            elif isinstance(column.datatype, VARCHAR):
-                print(f"{column.name} -> varchar")
+            elif is_string(column):
+                print(f"{column.name} -> string")
                 validator = VarcharValidator(config, table, column)
-                # TODO: validator.validate()
+                result = validator.validate()
+                print(f"Result\n{result}")
             elif isinstance(column.datatype, BOOLEAN):
                 print(f"{column.name} -> boolean")
                 validator = BooleanValidator(config, table, column)
