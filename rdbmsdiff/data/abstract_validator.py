@@ -29,6 +29,10 @@ class AbstractValidator(ABC):
         return engine
 
     @property
+    def limit(self) -> int:
+        return 50
+
+    @property
     def source_db_config(self) -> DatabaseProperties:
         return self._source_db_config
 

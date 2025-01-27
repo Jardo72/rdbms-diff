@@ -25,7 +25,7 @@ class DateTimeValidator(AbstractValidator):
         engine = self.create_engine(db_properties)
         with Session(engine) as session:
             format_pattern = self._get_format_pattern()
-            statement = f"SELECT TO_CHAR({self.column_name}, '{format_pattern}') FROM {self.table_name} WHERE {self.column_name} IS NOT NULL ORDER BY TO_CHAR({self.column_name}, '{format_pattern}') ASC LIMIT 50"
+            statement = f"SELECT TO_CHAR({self.column_name}, '{format_pattern}') FROM {self.table_name} WHERE {self.column_name} IS NOT NULL ORDER BY TO_CHAR({self.column_name}, '{format_pattern}') ASC LIMIT {self.limit}"
             result = session.execute(text(statement)).first()
             return ValidationQuery(
                 sql=statement,
