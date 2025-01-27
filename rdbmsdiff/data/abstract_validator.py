@@ -64,6 +64,8 @@ class AbstractValidator(ABC):
 
     @staticmethod
     def format_rows(rows: Sequence[Row[Any]]) -> str:
+        if not rows:
+            return "N/A"
         result = ""
         for single_row in rows:
             result += str(single_row) + "\n"
