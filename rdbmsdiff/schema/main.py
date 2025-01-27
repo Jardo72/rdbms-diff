@@ -35,7 +35,7 @@ def create_cmd_line_args_parser() -> ArgumentParser:
     )
     parser.add_argument(
         "diff_report",
-        help="the name of the output JSON file the outcome of the comparison is to be written to"
+        help="the name of the output JSON file the detailed outcome of the comparison is to be written to"
     )
 
     # optional arguments
@@ -47,10 +47,10 @@ def create_cmd_line_args_parser() -> ArgumentParser:
         help="if specified, the user will be asked for passwords (the passwords will not be read from env. variables)"
     )
     parser.add_argument(
-        "-o", "--output-html",
-        dest="output_html_file",
+        "-s", "--summary-html",
+        dest="summary_html_file",
         default=None,
-        help="optional name of an HTML output file the outcome of the comparison is to be written to"
+        help="optional name of an HTML output file the summary of the comparison is to be written to"
     )
 
     return parser
@@ -108,7 +108,7 @@ def main() -> None:
         target_meta_data = read_db_meta_data(config.target_db_config)
         schema_diff = DBSchemaDiff(source_schema=source_meta_data, target_schema=target_meta_data)
         write_report(schema_diff, cmd_line_args.diff_report)
-        print_summary(schema_diff, cmd_line_args.output_html_file)
+        print_summary(schema_diff, cmd_line_args.summary_html_file)
     except ReadConfigurationError as e:
         handle_configuration_error(e)
 
