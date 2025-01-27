@@ -1,7 +1,7 @@
 from json import dump
 from typing import Any, Dict, Sequence
 
-from colorama import Fore
+from rich.console import Console
 
 from .diff import DBColumnDiff, DBSchemaDiff, DBTableDiff
 
@@ -47,6 +47,7 @@ def _generate_tables_with_incompatible_indexes(table_diff_list: Sequence[DBTable
 
 
 def write_report(db_schema_diff: DBSchemaDiff, filename: str) -> None:
+    console = Console(record=False)
     report = {
         "tables_missing_in_source_database": db_schema_diff.tables_missing_in_source_db(),
         "tables_missing_in_target_database": db_schema_diff.tables_missing_in_target_db(),
@@ -64,5 +65,5 @@ def write_report(db_schema_diff: DBSchemaDiff, filename: str) -> None:
     with open(filename, "w") as json_file:
         dump(report, json_file, indent=4)
 
-    print()
-    print(f"Comparison completed, details written to {Fore.CYAN}{filename}{Fore.RESET}")
+    console.print()
+    console.print(f"Comparison completed, details written to [cyan]{filename}[/cyan]")
