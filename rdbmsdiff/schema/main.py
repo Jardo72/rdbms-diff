@@ -79,7 +79,7 @@ def create_summary_rows(db_schema_diff: DBSchemaDiff) -> Tuple[SummaryRow, ...]:
     return tuple(result)
 
 
-def print_summary(db_schema_diff: DBSchemaDiff, output_html_file: str) -> None:
+def print_summary(db_schema_diff: DBSchemaDiff, summary_html_file: str) -> None:
     console = Console(record=True)
     table = Table(title="Schema Comparison Summary", show_lines=True)
 
@@ -96,8 +96,8 @@ def print_summary(db_schema_diff: DBSchemaDiff, output_html_file: str) -> None:
 
     console.print()
     console.print(table)
-    if output_html_file:
-        console.save_html(output_html_file)
+    if summary_html_file:
+        console.save_html(summary_html_file)
 
 
 def main() -> None:

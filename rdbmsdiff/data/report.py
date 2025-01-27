@@ -1,10 +1,45 @@
-from .validation_details import ColumnValidationDetails, TableValidationDetails
+from dataclasses import dataclass
+
+from .validation_details import ColumnValidationDetails, TableValidationDetails, ValidationResult
+
+
+@dataclass(frozen=True, slots=True)
+class Statistics:
+    overall_table_count: int
+    failed_table_count: int
+    overall_validation_count: int
+    failed_validation_count: int
+
+
+class _Statistics:
+
+    def __init__(self) -> None:
+        self._overall_table_count = 0
+        self._failed_table_count = 0
+        self._overall_validation_count = 0
+        self._failed_validation_count = 0
+
+    def add(self, details: TableValidationDetails) -> None:
+        self._overall_table_count += 1
+        if details.result is ValidationResult.FAILED:
+            self._failed_table_count += 1
+        self._overall_validation_count += details.overall_validation_count
+        self._failed_validation_count += details.failed_validation_count
+
+    def get_snapshot(self) -> Statistics:
+        return Statistics(
+            overall_table_count=self._overall_table_count,
+            failed_table_count=self._failed_table_count,
+            overall_validation_count=self._overall_validation_count,
+            failed_validation_count=self._failed_validation_count,
+        )
 
 
 class Report:
 
     def __init__(self, filename: str) -> None:
         self._file = open(filename, "w")
+        self._statistics = _Statistics()
 
     def _write_table_header(self, details: TableValidationDetails) -> None:
         self._file.write(f"{90 * '='}\n")
@@ -30,10 +65,14 @@ class Report:
         self._file.write("\n\n")
 
     def add(self, table_details: TableValidationDetails) -> None:
+        self._statistics.add(table_details)
         self._write_table_header(table_details)
         for column_details in table_details.column_validations_details:
             self._write_column_validation_details(column_details)
         self._file.flush()
+
+    def get_statistics(self) -> Statistics:
+        return self._statistics.get_snapshot()
 
     def close(self) -> None:
         self._file.close()
