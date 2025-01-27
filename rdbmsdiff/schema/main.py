@@ -3,9 +3,8 @@ from argparse import ArgumentParser, Namespace, RawTextHelpFormatter
 from colorama import init as colorama_init, Fore
 
 from rdbmsdiff.foundation import ReadConfigurationError
-from rdbmsdiff.foundation import epilog, handle_configuration_error, read_config
+from rdbmsdiff.foundation import epilog, handle_configuration_error, read_config, read_db_meta_data
 from .diff import DBSchemaDiff
-from .metadata import read_db_meta_data
 from .report import write_report
 
 

@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import Any, Optional, Sequence, Tuple
 
-from .metadata import DBSchema, DBTable
+from rdbmsdiff.foundation import DBSchema, DBTable
 
 
 @dataclass(frozen=True, slots=True)

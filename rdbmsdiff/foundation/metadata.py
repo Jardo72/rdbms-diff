@@ -83,9 +83,24 @@ class DBTable:
     def constraint_count(self) -> int:
         return len(self.check_constraints) + len(self.unique_constraints) + len(self.primary_key_constraints) + len(self.foreign_key_constraints)
 
+    # TODO:
+    # - chances are we do not need this
+    # - added for backwards compatibility during refactoring
+    @property
+    def constraint_names_as_set(self) -> Set[str]:
+        result = list(map(lambda c: c.name, self.check_constraints))
+        result += list(map(lambda c: c.name, self.unique_constraints))
+        result += list(map(lambda c: c.name, self.primary_key_constraints))
+        result += list(map(lambda c: c.name, self.foreign_key_constraints))
+        return set(result)
+
     @property
     def index_count(self) -> int:
         return len(self.indexes)
+
+    @property
+    def index_names_as_set(self) -> Set[str]:
+        return set(self.indexes)
 
 
 @dataclass(frozen=True, slots=True)
