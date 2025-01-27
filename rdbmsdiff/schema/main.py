@@ -1,11 +1,28 @@
 from argparse import ArgumentParser, Namespace, RawTextHelpFormatter
+from dataclasses import dataclass
+from typing import Tuple
 
-from colorama import init as colorama_init, Fore
+from rich.console import Console
+from rich.table import Table
 
-from rdbmsdiff.foundation import ReadConfigurationError
+from rdbmsdiff.foundation import ReadConfigurationError, Status
 from rdbmsdiff.foundation import epilog, handle_configuration_error, read_config, read_db_meta_data
 from .diff import DBSchemaDiff
 from .report import write_report
+
+
+@dataclass(frozen=True)
+class SummaryRow:
+    label: str
+    discrepancy_count: int
+
+    @property
+    def discrepancy_count_as_str(self) -> str:
+        return str(self.discrepancy_count)
+
+    @property
+    def status(self) -> Status:
+        return Status.OK if self.discrepancy_count == 0 else Status.ERROR
 
 
 def create_cmd_line_args_parser() -> ArgumentParser:
@@ -39,39 +56,53 @@ def parse_cmd_line_args() -> Namespace:
     return params
 
 
-def print_value(label: str, value: int) -> None:
-    color = Fore.GREEN if value == 0 else Fore.RED
-    label = (label + ":").ljust(52)
-    print(f"{color}{label}{value}{Fore.RESET}")
+def create_summary_rows(db_schema_diff: DBSchemaDiff) -> Tuple[SummaryRow, ...]:
+    result = [
+        SummaryRow(label="Number of tables missing in source DB", discrepancy_count=db_schema_diff.number_of_tables_missing_in_source_db()),
+        SummaryRow(label="Number of tables missing in target DB", discrepancy_count=db_schema_diff.number_of_tables_missing_in_target_db()),
+        SummaryRow(label="Number of tables with distinct columns", discrepancy_count=db_schema_diff.number_of_tables_with_incompatible_columns()),
+        SummaryRow(label="Number of tables with distinct constraints", discrepancy_count=db_schema_diff.number_of_tables_with_incompatible_constraints()),
+        SummaryRow(label="Number of tables with distinct indexes", discrepancy_count=db_schema_diff.number_of_tables_with_incompatible_indexes()),
+        SummaryRow(label="Number of sequences missing in source DB", discrepancy_count=db_schema_diff.number_of_sequences_missing_in_source_db()),
+        SummaryRow(label="Number of sequences missing in target DB", discrepancy_count=db_schema_diff.number_of_sequences_missing_in_target_db()),
+        SummaryRow(label="Number of views missing in source DB", discrepancy_count=db_schema_diff.number_of_views_missing_in_source_db()),
+        SummaryRow(label="Number of views missing in target DB", discrepancy_count=db_schema_diff.number_of_views_missing_in_target_db()),
+        SummaryRow(label="Number of materialized views missing in source DB", discrepancy_count=db_schema_diff.number_of_materialized_views_missing_in_source_db()),
+        SummaryRow(label="Number of materialized views missing in target DB", discrepancy_count=db_schema_diff.number_of_materialized_views_missing_in_target_db()),
+    ]
+    return tuple(result)
 
 
-def print_summary(db_schema_diff: DBSchemaDiff) -> None:
-    print()
-    print("SUMMARY")
+def print_summary(db_schema_diff: DBSchemaDiff, output_html_file: str) -> None:
+    console = Console(record=True)
+    table = Table(title="Schema Comparison Results", show_lines=True)
 
-    print_value("Number of tables missing in source DB", db_schema_diff.number_of_tables_missing_in_source_db())
-    print_value("Number of tables missing in target DB", db_schema_diff.number_of_tables_missing_in_target_db())
-    print_value("Number of tables with distinct columns", db_schema_diff.number_of_tables_with_incompatible_columns())
-    print_value("Number of tables with distinct constraints", db_schema_diff.number_of_tables_with_incompatible_constraints())
-    print_value("Number of tables with distinct indexes", db_schema_diff.number_of_tables_with_incompatible_indexes())
-    print_value("Number of sequences missing in source DB", db_schema_diff.number_of_sequences_missing_in_source_db())
-    print_value("Number of sequences missing in target DB", db_schema_diff.number_of_sequences_missing_in_target_db())
-    print_value("Number of views missing in source DB", db_schema_diff.number_of_views_missing_in_source_db())
-    print_value("Number of views missing in target DB", db_schema_diff.number_of_views_missing_in_target_db())
-    print_value("Number of materialized views missing in source DB", db_schema_diff.number_of_materialized_views_missing_in_source_db())
-    print_value("Number of materialized views missing in target DB", db_schema_diff.number_of_materialized_views_missing_in_target_db())
+    table.add_column("Metric", justify="left")
+    table.add_column("Value", justify="right")
+    table.add_column("Status", justify="center")
+
+    for row in create_summary_rows(db_schema_diff):
+        table.add_row(
+            row.label,
+            row.discrepancy_count_as_str,
+            Status.format(row.status),
+        )
+
+    console.print()
+    console.print(table)
+    if output_html_file:
+        console.save_html(output_html_file)
 
 
 def main() -> None:
     try:
-        colorama_init()
         cmd_line_args = parse_cmd_line_args()
         config = read_config(cmd_line_args.config_file, cmd_line_args.ask_for_passwords)
         source_meta_data = read_db_meta_data(config.source_db_config)
         target_meta_data = read_db_meta_data(config.target_db_config)
         schema_diff = DBSchemaDiff(source_schema=source_meta_data, target_schema=target_meta_data)
         write_report(schema_diff, cmd_line_args.diff_report)
-        print_summary(schema_diff)
+        print_summary(schema_diff, None)
     except ReadConfigurationError as e:
         handle_configuration_error(e)
 
