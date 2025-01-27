@@ -46,6 +46,12 @@ def create_cmd_line_args_parser() -> ArgumentParser:
         action="store_true",
         help="if specified, the user will be asked for passwords (the passwords will not be read from env. variables)"
     )
+    parser.add_argument(
+        "-o", "--output-html",
+        dest="output_html_file",
+        default=None,
+        help="optional name of an HTML output file the outcome of the comparison is to be written to"
+    )
 
     return parser
  
@@ -75,7 +81,7 @@ def create_summary_rows(db_schema_diff: DBSchemaDiff) -> Tuple[SummaryRow, ...]:
 
 def print_summary(db_schema_diff: DBSchemaDiff, output_html_file: str) -> None:
     console = Console(record=True)
-    table = Table(title="Schema Comparison Results", show_lines=True)
+    table = Table(title="Schema Comparison Summary", show_lines=True)
 
     table.add_column("Metric", justify="left")
     table.add_column("Value", justify="right")
@@ -102,7 +108,7 @@ def main() -> None:
         target_meta_data = read_db_meta_data(config.target_db_config)
         schema_diff = DBSchemaDiff(source_schema=source_meta_data, target_schema=target_meta_data)
         write_report(schema_diff, cmd_line_args.diff_report)
-        print_summary(schema_diff, None)
+        print_summary(schema_diff, cmd_line_args.output_html_file)
     except ReadConfigurationError as e:
         handle_configuration_error(e)
 
