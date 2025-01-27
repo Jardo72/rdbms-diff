@@ -10,6 +10,7 @@ from .numeric_validator import NumericValidator
 from .report import Report
 from .validation_details import TableValidationDetails
 from .varchar_length_validator import VarcharLengthValidator
+from .varchar_value_validator import VarcharValueValidator
 
 
 class ValidationEngine:
@@ -27,6 +28,7 @@ class ValidationEngine:
                 result.append(NumericValidator(self._config, table, column))
             elif column.is_string:
                 result.append(VarcharLengthValidator(self._config, table, column))
+                result.append(VarcharValueValidator(self._config, table, column))
             elif column.is_boolean:
                 result.append(BooleanValidator(self._config, table, column))
             elif column.is_date_time:

@@ -29,5 +29,5 @@ class DateTimeValidator(AbstractValidator):
             result = session.execute(text(statement)).first()
             return ValidationQuery(
                 sql=statement,
-                result_set=str(result)
+                result_set=self.format_rows(result)
             )
