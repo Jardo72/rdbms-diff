@@ -49,8 +49,10 @@ class AbstractValidator(ABC):
         return f"{self._table.name}.{self._column.name} - {type(self).__name__}"
 
     def validate(self) -> ColumnValidationDetails:
-        source_query_details = self._select(self.source_db_config)
-        target_query_details = self._select(self.target_db_config)
+        source_query_future = self._EXECUTOR.submit(self._select, self.source_db_config)
+        target_query_future = self._EXECUTOR.submit(self._select, self.target_db_config)
+        source_query_details = source_query_future.result()
+        target_query_details = target_query_future.result()
         return ColumnValidationDetails(
             result=ValidationResult.PASSED if source_query_details.result_set == target_query_details.result_set else ValidationResult.FAILED,
             validator_description=self.description,
