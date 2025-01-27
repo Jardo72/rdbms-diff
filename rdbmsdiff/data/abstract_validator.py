@@ -1,5 +1,6 @@
 from abc import ABC
 from abc import abstractmethod
+from concurrent.futures import ThreadPoolExecutor
 from typing import Any, Sequence
 
 from sqlalchemy import create_engine
@@ -8,10 +9,12 @@ from sqlalchemy.engine import Row
 
 from rdbmsdiff.foundation import Configuration, DatabaseProperties, DBColumn, DBTable
 
-from .validation_details import ValidationDetails, ValidationQuery, ValidationResult
+from .validation_details import ColumnValidationDetails, ValidationQuery, ValidationResult
 
 
 class AbstractValidator(ABC):
+
+    _EXECUTOR = ThreadPoolExecutor(max_workers=2)
 
     def __init__(self, config: Configuration, table: DBTable, column: DBColumn) -> None:
         self._source_db_config = config.source_db_config
@@ -45,10 +48,10 @@ class AbstractValidator(ABC):
     def description(self) -> str:
         return f"{self._table.name}.{self._column.name} - {type(self).__name__}"
 
-    def validate(self) -> ValidationDetails:
+    def validate(self) -> ColumnValidationDetails:
         source_query_details = self._select(self.source_db_config)
         target_query_details = self._select(self.target_db_config)
-        return ValidationDetails(
+        return ColumnValidationDetails(
             result=ValidationResult.PASSED if source_query_details.result_set == target_query_details.result_set else ValidationResult.FAILED,
             validator_description=self.description,
             source_query_details=source_query_details,

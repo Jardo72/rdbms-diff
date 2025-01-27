@@ -1,8 +1,6 @@
 from argparse import ArgumentParser, Namespace, RawTextHelpFormatter
 
-from sqlalchemy.sql.sqltypes import BIGINT, BOOLEAN, DOUBLE, FLOAT, INTEGER, SMALLINT, TEXT, VARCHAR
-
-from rdbmsdiff.foundation import Configuration, DBColumn, DBSchema, ReadConfigurationError
+from rdbmsdiff.foundation import Configuration, DBSchema, ReadConfigurationError
 from rdbmsdiff.foundation import epilog, handle_configuration_error, read_config, read_db_meta_data
 
 from .boolean_validator import BooleanValidator
@@ -42,41 +40,22 @@ def parse_cmd_line_args() -> Namespace:
     return params
 
 
-# TODO: this might be moved to DBColumn
-def is_numeric(column: DBColumn) -> bool:
-    return (
-        isinstance(column.datatype, SMALLINT) or
-        isinstance(column.datatype, INTEGER) or
-        isinstance(column.datatype, BIGINT) or
-        isinstance(column.datatype, FLOAT) or
-        isinstance(column.datatype, DOUBLE)
-    )
-
-
-# TODO: this might be moved to DBColumn
-def is_string(column: DBColumn) -> bool:
-    return (
-        isinstance(column.datatype, VARCHAR) or
-        isinstance(column.datatype, TEXT)
-    )
-
-
 def introspect(config: Configuration, db_meta_data: DBSchema) -> None:
     for table in db_meta_data.tables:
         print()
         print(table.name)
         for column in table.columns:
-            if is_numeric(column):
+            if column.is_numeric:
                 print(f"{column.name} -> numeric")
                 validator = NumericValidator(config, table, column)
                 result = validator.validate()
                 print(f"Result\n{result}")
-            elif is_string(column):
+            elif column.is_string:
                 print(f"{column.name} -> string")
                 validator = VarcharLengthValidator(config, table, column)
                 result = validator.validate()
                 print(f"Result\n{result}")
-            elif isinstance(column.datatype, BOOLEAN):
+            elif column.is_boolean:
                 print(f"{column.name} -> boolean")
                 validator = BooleanValidator(config, table, column)
                 result = validator.validate()

@@ -4,6 +4,7 @@ from typing import Any, Dict, Set, Tuple
 from rich.console import Console
 from sqlalchemy import create_engine, inspect, MetaData
 from sqlalchemy.sql.schema import CheckConstraint, ForeignKeyConstraint, PrimaryKeyConstraint, UniqueConstraint
+from sqlalchemy.sql.sqltypes import BIGINT, BOOLEAN, DOUBLE, FLOAT, INTEGER, SMALLINT, TEXT, VARCHAR
 
 from .config import DatabaseProperties
 
@@ -13,6 +14,27 @@ class DBColumn:
     name: str
     datatype: Any
     nullable: bool
+
+    @property
+    def is_numeric(self) -> bool:
+        return (
+            isinstance(self.datatype, SMALLINT) or
+            isinstance(self.datatype, INTEGER) or
+            isinstance(self.datatype, BIGINT) or
+            isinstance(self.datatype, FLOAT) or
+            isinstance(self.datatype, DOUBLE)
+        )
+
+    @property
+    def is_string(self) -> bool:
+        return (
+            isinstance(self.datatype, VARCHAR) or
+            isinstance(self.datatype, TEXT)
+        )
+
+    @property
+    def is_boolean(self) -> bool:
+        return isinstance(self.datatype, BOOLEAN)
 
 
 @dataclass(frozen=True, slots=True)
