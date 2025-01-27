@@ -35,3 +35,15 @@ class TableValidationDetails:
             if column.result is ValidationResult.FAILED:
                 return ValidationResult.FAILED
         return ValidationResult.PASSED
+
+    @property
+    def overall_validation_count(self) -> int:
+        return len(self.column_validations_details)
+
+    @property
+    def failed_validation_count(self) -> int:
+        result = 0
+        for single_details in self.column_validations_details:
+            if single_details.result is ValidationResult.FAILED:
+                result += 1
+        return result

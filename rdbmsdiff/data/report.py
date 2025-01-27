@@ -8,8 +8,8 @@ class Report:
 
     def _write_table_header(self, details: TableValidationDetails) -> None:
         self._file.write(f"{90 * '='}\n")
-        self._file.write(f"= {details.table_name}\n")
-        self._file.write(f"= Status = {details.result}\n")
+        self._file.write(f"= Table:  {details.table_name}\n")
+        self._file.write(f"= Status: {details.result.name} ({details.failed_validation_count} of {details.overall_validation_count} validations failed)\n")
         self._file.write(f"{90 * '='}\n")
         self._file.write("\n")
 
@@ -17,7 +17,7 @@ class Report:
         self._file.write(f"{80 * '-'}\n")
         self._file.write(f"- {details.validator_description}\n")
         self._file.write(f"{80 * '-'}\n")
-        self._file.write(f"Status: {details.result}")
+        self._file.write(f"Status: {details.result.name}")
         self._file.write("\n")
         self._file.write("Source DB\n")
         self._file.write(f"SQL: {details.source_query_details.sql}\n")
