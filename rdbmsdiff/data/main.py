@@ -74,7 +74,7 @@ def print_summary(statistics: Statistics, summary_html_file: str) -> None:
         Status.format(Status.OK if statistics.failed_table_count == 0 else Status.ERROR),
     )
     table.add_row(
-        "Validation",
+        "Validations",
         str(statistics.overall_validation_count),
         str(statistics.failed_validation_count),
         Status.format(Status.OK if statistics.failed_validation_count == 0 else Status.ERROR),

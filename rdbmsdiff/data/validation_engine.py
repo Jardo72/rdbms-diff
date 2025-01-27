@@ -1,5 +1,7 @@
 from typing import Tuple
 
+from rich.console import Console
+
 from rdbmsdiff.foundation import Configuration, DBSchema, DBTable
 
 from .abstract_validator import AbstractValidator
@@ -20,6 +22,7 @@ class ValidationEngine:
         self._source_db_meta_data = source_db_meta_data
         self._target_db_meta_data = target_db_meta_data
         self._report = report
+        self._console = Console(record=False)
 
     def _create_validators(self, table: DBTable) -> Tuple[AbstractValidator, ...]:
         result = []
@@ -39,7 +42,7 @@ class ValidationEngine:
         return tuple(result)
 
     def _validate_single_table(self, table: DBTable) -> TableValidationDetails:
-        print(f"Going to validate the table {table.name}")
+        self._console.print(f"Validating the table {table.name}")
         validators = self._create_validators(table)
         details = []
         for validator in validators:
@@ -48,6 +51,8 @@ class ValidationEngine:
         return TableValidationDetails(table.name, tuple(details))
 
     def validate(self) -> None:
+        self._console.print()
+        self._console.print("[cyan]Going to validate tables[/cyan]")
         for table in self._source_db_meta_data.tables:
             # TODO: check if the table is present in the target DB
             details = self._validate_single_table(table)
