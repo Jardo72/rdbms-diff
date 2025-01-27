@@ -33,6 +33,7 @@ class Report:
         self._write_table_header(table_details)
         for column_details in table_details.column_validations_details:
             self._write_column_validation_details(column_details)
+        self._file.flush()
 
     def close(self) -> None:
         self._file.close()
