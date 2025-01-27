@@ -3,10 +3,8 @@ from argparse import ArgumentParser, Namespace, RawTextHelpFormatter
 from rdbmsdiff.foundation import Configuration, DBSchema, ReadConfigurationError
 from rdbmsdiff.foundation import epilog, handle_configuration_error, read_config, read_db_meta_data
 
-from .boolean_validator import BooleanValidator
-from .null_value_count_validator import NullValueCheckType, NullValueCountValidator
-from .numeric_validator import NumericValidator
-from .varchar_length_validator import VarcharLengthValidator
+from .report import Report
+from .validation_engine import ValidationEngine
 
 
 def create_cmd_line_args_parser() -> ArgumentParser:
@@ -18,8 +16,8 @@ def create_cmd_line_args_parser() -> ArgumentParser:
         help="the name of the configuration file containing the connection strings and usernames"
     )
     parser.add_argument(
-        "diff_report",
-        help="the name of the output JSON file the outcome of the comparison is to be written to"
+        "report",
+        help="the name of the output text file the outcome of the comparison is to be written to"
     )
 
     # optional arguments
@@ -40,43 +38,23 @@ def parse_cmd_line_args() -> Namespace:
     return params
 
 
-def introspect(config: Configuration, db_meta_data: DBSchema) -> None:
-    for table in db_meta_data.tables:
-        print()
-        print(table.name)
-        for column in table.columns:
-            if column.is_numeric:
-                print(f"{column.name} -> numeric")
-                validator = NumericValidator(config, table, column)
-                result = validator.validate()
-                print(f"Result\n{result}")
-            elif column.is_string:
-                print(f"{column.name} -> string")
-                validator = VarcharLengthValidator(config, table, column)
-                result = validator.validate()
-                print(f"Result\n{result}")
-            elif column.is_boolean:
-                print(f"{column.name} -> boolean")
-                validator = BooleanValidator(config, table, column)
-                result = validator.validate()
-                print(f"Result\n{result}")
-            if column.nullable:
-                print(f"{column.name} is nullable")
-                validator = NullValueCountValidator(config, table, column, NullValueCheckType.IS_NULL)
-                result = validator.validate()
-                print(f"Result\n{result}")
-                validator = NullValueCountValidator(config, table, column, NullValueCheckType.IS_NOT_NULL)
-                result = validator.validate()
-                print(f"Result\n{result}")
+def validate(config: Configuration, source_db_meta_data: DBSchema, target_db_meta_data: DBSchema, report_filename: str) -> None:
+    report = Report(report_filename)
+    try:
+        engine = ValidationEngine(config, source_db_meta_data, target_db_meta_data, report)
+        engine.validate()
+    finally:
+        if report is not None:
+            report.close()
 
 
 def main() -> None:
     try:
         cmd_line_args = parse_cmd_line_args()
         config = read_config(cmd_line_args.config_file, cmd_line_args.ask_for_passwords)
-        source_meta_data = read_db_meta_data(config.source_db_config)
-        target_meta_data = read_db_meta_data(config.target_db_config)
-        introspect(config, source_meta_data)
+        source_db_meta_data = read_db_meta_data(config.source_db_config)
+        target_db_meta_data = read_db_meta_data(config.target_db_config)
+        validate(config, source_db_meta_data, target_db_meta_data, cmd_line_args.report)
     except ReadConfigurationError as e:
         handle_configuration_error(e)
 

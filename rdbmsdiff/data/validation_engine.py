@@ -44,4 +44,6 @@ class ValidationEngine:
 
     def validate(self) -> None:
         for table in self._source_db_meta_data.tables:
+            # TODO: check if the table is present in the target DB
             details = self._validate_single_table(table)
+            self._report.add(details)

@@ -28,3 +28,10 @@ class ColumnValidationDetails:
 class TableValidationDetails:
     table_name: str
     column_validations_details: Tuple[ColumnValidationDetails, ...]
+
+    @property
+    def result(self) -> ValidationResult:
+        for column in self.column_validations_details:
+            if column.result is ValidationResult.FAILED:
+                return ValidationResult.FAILED
+        return ValidationResult.PASSED
