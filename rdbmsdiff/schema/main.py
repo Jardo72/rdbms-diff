@@ -83,8 +83,8 @@ def print_summary(db_schema_diff: DBSchemaDiff, output_html_file: str) -> None:
     console = Console(record=True)
     table = Table(title="Schema Comparison Summary", show_lines=True)
 
-    table.add_column("Metric", justify="left")
-    table.add_column("Value", justify="right")
+    table.add_column("Discrepancy", justify="left")
+    table.add_column("Count", justify="right")
     table.add_column("Status", justify="center")
 
     for row in create_summary_rows(db_schema_diff):
