@@ -40,7 +40,7 @@ class ValidationEngine:
         self._source_db_meta_data = source_db_meta_data
         self._target_db_meta_data = target_db_meta_data
         self._report = report
-        self._console = Console(record=False)
+        self._console = Console(record=False, highlight=False)
 
     def _create_validators(self, table: DBTable) -> Tuple[AbstractValidator, ...]:
         result = []
@@ -60,7 +60,6 @@ class ValidationEngine:
         return tuple(result)
 
     def _validate_single_table(self, table: DBTable) -> TableValidationDetails:
-        self._console.print(f"Validating the table {table.name}")
         validators = self._create_validators(table)
         details = []
         for validator in validators:
@@ -70,8 +69,11 @@ class ValidationEngine:
 
     def validate(self) -> None:
         self._console.print()
-        self._console.print("[cyan]Going to validate tables[/cyan]")
-        for table in self._source_db_meta_data.tables:
-            # TODO: check if the table is present in the target DB
-            details = self._validate_single_table(table)
-            self._report.add(details)
+        self._console.print("[cyan]Going to validate tables...[/cyan]")
+        table_count = len(self._source_db_meta_data.tables)
+        with self._console.status(f"Validating tables..."):
+            for index, table in enumerate(self._source_db_meta_data.tables):
+                # TODO: check if the table is present in the target DB
+                details = self._validate_single_table(table)
+                self._report.add(details)
+                self._console.print(f"{table.name} ({index + 1}/{table_count}) validated")
