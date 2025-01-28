@@ -17,6 +17,7 @@
 #
 
 from argparse import ArgumentParser, Namespace, RawTextHelpFormatter
+from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
 from typing import Dict, Optional, Sequence, Tuple
 
@@ -26,7 +27,7 @@ from sqlalchemy import create_engine, func, select
 from sqlalchemy import MetaData
 from sqlalchemy.orm import Session
 
-from rdbmsdiff.foundation import DatabaseProperties, ReadConfigurationError, Status
+from rdbmsdiff.foundation import Configuration, DatabaseProperties, ReadConfigurationError, Status
 from rdbmsdiff.foundation import epilog, handle_configuration_error, read_config
 
 
@@ -92,9 +93,6 @@ def parse_cmd_line_args() -> Namespace:
 
 
 def read_record_counts(db_properties: DatabaseProperties) -> Dict[str, int]:
-    console = Console(record=False, highlight=False)
-    console.print()
-    console.print(f"Going to read record counts from [cyan]{db_properties.url_without_password}[/cyan], schema [cyan]{db_properties.schema}[/cyan]")
     engine = create_engine(url=db_properties.url_with_password)
     meta_data = MetaData(schema=db_properties.schema)
     meta_data.reflect(bind=engine)
@@ -108,7 +106,6 @@ def read_record_counts(db_properties: DatabaseProperties) -> Dict[str, int]:
                 tokens = name.split(".")
                 name = tokens[1]
             result[name] = record_count
-            console.print(f"{name} -> {record_count} records")
         return result
 
 
@@ -124,8 +121,8 @@ def compare_record_counts(source_record_counts: Dict[str, int], target_record_co
     return tuple(result)
 
 
-def print_comparison_results(comparison_results: Sequence[ComparisonResult], output_html_file: str) -> None:
-    console = Console(record=True)
+def print_comparison_results(config: Configuration, comparison_results: Sequence[ComparisonResult], output_html_file: str) -> None:
+    console = Console(record=True, highlight=False)
     table = Table(title="Record Count Comparison Results", show_lines=True)
 
     table.add_column("Table", justify="left")
@@ -143,18 +140,26 @@ def print_comparison_results(comparison_results: Sequence[ComparisonResult], out
 
     console.print()
     console.print(table)
+    console.print()
+    console.print(f"Source DB: [cyan]{config.source_db_config.url_without_password}[/cyan], schema [cyan]{config.source_db_config.schema}[/cyan]")
+    console.print(f"Target DB: [cyan]{config.source_db_config.url_without_password}[/cyan], schema [cyan]{config.source_db_config.schema}[/cyan]")
     if output_html_file:
         console.save_html(output_html_file)
 
 
 def main() -> None:
     try:
+        console = Console(record=False, highlight=False)
+        console.print()
         cmd_line_args = parse_cmd_line_args()
         config = read_config(cmd_line_args.config_file, cmd_line_args.ask_for_passwords)
-        source_record_counts = read_record_counts(config.source_db_config)
-        target_record_counts = read_record_counts(config.target_db_config)
+        executor = ThreadPoolExecutor(max_workers=2)
+        source_record_counts_future = executor.submit(read_record_counts, config.source_db_config)
+        target_record_counts_future = executor.submit(read_record_counts, config.target_db_config)
+        source_record_counts = source_record_counts_future.result()
+        target_record_counts = target_record_counts_future.result()
         comparison_results = compare_record_counts(source_record_counts, target_record_counts)
-        print_comparison_results(comparison_results, cmd_line_args.output_html_file)
+        print_comparison_results(config, comparison_results, cmd_line_args.output_html_file)
     except ReadConfigurationError as e:
         handle_configuration_error(e)
 
