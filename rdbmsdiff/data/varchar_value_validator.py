@@ -32,7 +32,8 @@ class VarcharValueValidator(AbstractValidator):
     def _select(self, db_properties: DatabaseProperties) -> ValidationQuery:
         engine = self.create_engine(db_properties)
         with Session(engine) as session:
-            statement = f"SELECT UPPER(MD5({self.column_name})) FROM {self.table_name} WHERE {self.column_name} IS NOT NULL ORDER BY UPPER(MD5({self.column_name})) COLLATE \"en-US-cp037-x-icu\" ASC LIMIT {self.limit}"
+            # statement = f"SELECT UPPER(MD5({self.column_name})) FROM {self.table_name} WHERE {self.column_name} IS NOT NULL ORDER BY UPPER(MD5({self.column_name})) COLLATE \"en-US-cp037-x-icu\" ASC LIMIT {self.limit}"
+            statement = f"SELECT UPPER(MD5({self.column_name})) FROM {self.table_name} WHERE {self.column_name} IS NOT NULL ORDER BY UPPER(MD5({self.column_name})) ASC LIMIT {self.limit}"
             result = session.execute(text(statement)).all()
             return ValidationQuery(
                 sql=statement,
