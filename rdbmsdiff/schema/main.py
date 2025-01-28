@@ -82,17 +82,17 @@ def parse_cmd_line_args() -> Namespace:
 
 def create_summary_rows(db_schema_diff: DBSchemaDiff) -> Tuple[SummaryRow, ...]:
     result = [
-        SummaryRow(label="Number of tables missing in source DB", discrepancy_count=db_schema_diff.number_of_tables_missing_in_source_db()),
-        SummaryRow(label="Number of tables missing in target DB", discrepancy_count=db_schema_diff.number_of_tables_missing_in_target_db()),
-        SummaryRow(label="Number of tables with distinct columns", discrepancy_count=db_schema_diff.number_of_tables_with_incompatible_columns()),
-        SummaryRow(label="Number of tables with distinct constraints", discrepancy_count=db_schema_diff.number_of_tables_with_incompatible_constraints()),
-        SummaryRow(label="Number of tables with distinct indexes", discrepancy_count=db_schema_diff.number_of_tables_with_incompatible_indexes()),
-        SummaryRow(label="Number of sequences missing in source DB", discrepancy_count=db_schema_diff.number_of_sequences_missing_in_source_db()),
-        SummaryRow(label="Number of sequences missing in target DB", discrepancy_count=db_schema_diff.number_of_sequences_missing_in_target_db()),
-        SummaryRow(label="Number of views missing in source DB", discrepancy_count=db_schema_diff.number_of_views_missing_in_source_db()),
-        SummaryRow(label="Number of views missing in target DB", discrepancy_count=db_schema_diff.number_of_views_missing_in_target_db()),
-        SummaryRow(label="Number of materialized views missing in source DB", discrepancy_count=db_schema_diff.number_of_materialized_views_missing_in_source_db()),
-        SummaryRow(label="Number of materialized views missing in target DB", discrepancy_count=db_schema_diff.number_of_materialized_views_missing_in_target_db()),
+        SummaryRow(label="Tables missing in source DB", discrepancy_count=db_schema_diff.number_of_tables_missing_in_source_db()),
+        SummaryRow(label="Tables missing in target DB", discrepancy_count=db_schema_diff.number_of_tables_missing_in_target_db()),
+        SummaryRow(label="Tables with distinct columns", discrepancy_count=db_schema_diff.number_of_tables_with_incompatible_columns()),
+        SummaryRow(label="Tables with distinct constraints", discrepancy_count=db_schema_diff.number_of_tables_with_incompatible_constraints()),
+        SummaryRow(label="Tables with distinct indexes", discrepancy_count=db_schema_diff.number_of_tables_with_incompatible_indexes()),
+        SummaryRow(label="Sequences missing in source DB", discrepancy_count=db_schema_diff.number_of_sequences_missing_in_source_db()),
+        SummaryRow(label="Sequences missing in target DB", discrepancy_count=db_schema_diff.number_of_sequences_missing_in_target_db()),
+        SummaryRow(label="Views missing in source DB", discrepancy_count=db_schema_diff.number_of_views_missing_in_source_db()),
+        SummaryRow(label="Views missing in target DB", discrepancy_count=db_schema_diff.number_of_views_missing_in_target_db()),
+        SummaryRow(label="Materialized views missing in source DB", discrepancy_count=db_schema_diff.number_of_materialized_views_missing_in_source_db()),
+        SummaryRow(label="Materialized views missing in target DB", discrepancy_count=db_schema_diff.number_of_materialized_views_missing_in_target_db()),
     ]
     return tuple(result)
 
@@ -101,7 +101,7 @@ def print_summary(db_schema_diff: DBSchemaDiff, summary_html_file: str) -> None:
     console = Console(record=True)
     table = Table(title="Schema Comparison Summary", show_lines=True)
 
-    table.add_column("Discrepancy", justify="left")
+    table.add_column("Discrepancy Type", justify="left")
     table.add_column("Count", justify="right")
     table.add_column("Status", justify="center")
 
