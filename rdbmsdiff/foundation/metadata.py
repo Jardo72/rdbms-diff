@@ -73,6 +73,7 @@ class DBColumn:
 
 @dataclass(frozen=True, slots=True)
 class DBTable:
+    schema: str
     name: str
     columns: Tuple[DBColumn, ...]
     check_constraints: Tuple[CheckConstraint, ...]
@@ -81,6 +82,10 @@ class DBTable:
     primary_key_constraints: Tuple[PrimaryKeyConstraint, ...]
     foreign_key_constraints: Tuple[ForeignKeyConstraint, ...]
     indexes: Tuple[str, ...]
+
+    @property
+    def full_name(self) -> str:
+        return f"{self.schema}.{self.name}"
 
     @property
     def columns_as_dict(self) -> Dict[str, DBColumn]:
@@ -158,6 +163,7 @@ class _MetaDataReader:
                 tokens = name.split(".")
                 name = tokens[1]
             table_meta_info = DBTable(
+                schema=self._db_properties.schema,
                 name=name,
                 columns=tuple(map(lambda c: DBColumn(name=c.name, datatype=c.type, nullable=c.nullable), details.columns)),
                 check_constraints=tuple([constraint for constraint in details.constraints if isinstance(constraint, CheckConstraint)]),

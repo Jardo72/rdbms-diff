@@ -60,7 +60,7 @@ class AbstractValidator(ABC):
 
     @property
     def table_name(self) -> str:
-        return self._table.name
+        return self._table.full_name
 
     @property
     def column(self) -> DBColumn:
