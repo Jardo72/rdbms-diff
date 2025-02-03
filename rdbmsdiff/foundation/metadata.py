@@ -125,6 +125,12 @@ class DBTable:
     def index_names_as_set(self) -> Set[str]:
         return set(self.indexes)
 
+    @property
+    def has_primary_key(self) -> bool:
+        if self.primary_key_constraints is None:
+            return False
+        return len(self.primary_key_constraints) > 0
+
 
 @dataclass(frozen=True, slots=True)
 class DBSchema:

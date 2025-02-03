@@ -59,6 +59,10 @@ class AbstractValidator(ABC):
         return self._target_db_config
 
     @property
+    def table(self) -> DBTable:
+        return self._table
+
+    @property
     def table_name(self) -> str:
         return self._table.full_name
 
@@ -72,6 +76,8 @@ class AbstractValidator(ABC):
 
     @property
     def description(self) -> str:
+        if self._column is None:
+            return f"{self._table.name} - {type(self).__name__}"
         return f"{self._table.name}.{self._column.name} - {type(self).__name__}"
 
     def validate(self) -> ColumnValidationDetails:

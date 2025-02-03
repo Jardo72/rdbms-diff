@@ -27,6 +27,7 @@ from .boolean_validator import BooleanValidator
 from .date_time_validator import DateTimeValidator
 from .null_value_count_validator import NullValueCheckType, NullValueCountValidator
 from .numeric_validator import NumericValidator
+from .record_validator import RecordValidator
 from .report import Report
 from .validation_details import TableValidationDetails
 from .varchar_length_validator import VarcharLengthValidator
@@ -57,6 +58,7 @@ class ValidationEngine:
             if column.nullable:
                 result.append(NullValueCountValidator(self._config, table, column, NullValueCheckType.IS_NULL))
                 result.append(NullValueCountValidator(self._config, table, column, NullValueCheckType.IS_NOT_NULL))
+        result.append(RecordValidator(self._config, table))
         return tuple(result)
 
     def _validate_single_table(self, table: DBTable) -> TableValidationDetails:
