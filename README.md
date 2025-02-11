@@ -30,3 +30,5 @@ The following command will display instructions about how to start data validati
 ```
 python -m rdbmsdiff.data.main <config-file> -h
 ```
+
+## Test Databases (Docker Images)
