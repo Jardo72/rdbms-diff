@@ -15,4 +15,7 @@ docker run -p 5432:5432 --env POSTGRES_DB=rdbms-diff --env POSTGRES_USER=test-us
 
 ## Modifications of Schema
 ```sql
+ALTER TABLE t_means_of_transport ADD COLUMN description VARCHAR(100);
+ALTER TABLE t_stations ADD COLUMN description VARCHAR(100);
+ALTER TABLE t_lines ADD COLUMN night_line BOOLEAN NOT NULL DEFAULT false;
 ```
