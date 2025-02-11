@@ -5,6 +5,7 @@ The Dockerfile and the SQL script present in this directory can be used to creat
 
 ## How to Build the Docker Image
 ```
+docker build -t rdbmsdiff/test-postgres .
 ```
 
 ## How to Start the Docker Container
