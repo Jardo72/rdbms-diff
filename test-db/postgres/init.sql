@@ -14,8 +14,9 @@ CREATE TABLE t_means_of_transport (
 
 CREATE TABLE t_stations (
     uuid VARCHAR(36) NOT NULL,
-    name VARCHAR(50) NOT NULL UNIQUE,
-    CONSTRAINT t_stations_pk PRIMARY KEY(uuid)
+    name VARCHAR(50) NOT NULL,
+    CONSTRAINT t_stations_pk PRIMARY KEY(uuid),
+    CONSTRAINT t_stations_name UNIQUE(name)
 );
 
 CREATE TABLE t_lines (
@@ -32,11 +33,12 @@ CREATE TABLE t_lines (
 );
 
 CREATE TABLE t_edges (
-    uuid VARCHAR(36) NOT NULL PRIMARY KEY,
+    uuid VARCHAR(36) NOT NULL,
     start_station_uuid VARCHAR(36) NOT NULL,
     end_station_uuid VARCHAR(36) NOT NULL,
     line_uuid VARCHAR(36) NOT NULL,
     distance_min INTEGER NOT NULL,
+    CONSTRAINT t_edges_pk PRIMARY KEY(uuid),
     CONSTRAINT line_fk FOREIGN KEY (line_uuid) REFERENCES t_lines(uuid) ON DELETE CASCADE,
     CHECK (distance_min > 0),
     CONSTRAINT start_station_fk FOREIGN KEY (start_station_uuid) REFERENCES t_stations(uuid),
