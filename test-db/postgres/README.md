@@ -10,10 +10,16 @@ docker build -t rdbmsdiff/test-postgres .
 ```
 
 ## How to Start the Docker Container
-The following command can be used to start the Docker container based on the above described Docker image. This command maps the container port to the host port 5432. You can also use a different host port.
+The following command can be used to start the Docker container based on the above described Docker image. This command maps the container port to the host port 5432. 
 ```bash
 docker run -p 5432:5432 --env POSTGRES_DB=rdbms-diff --env POSTGRES_USER=test-user --env POSTGRES_PASSWORD=test-pwd  rdbmsdiff/test-postgres:latest
 ```
+
+You can also use a different host port. The following command illustrates how to use the host port 15432.
+```bash
+docker run -p 15432:5432 --env POSTGRES_DB=rdbms-diff --env POSTGRES_USER=test-user --env POSTGRES_PASSWORD=test-pwd  rdbmsdiff/test-postgres:latest
+```
+
 
 ## Modifications of Schema
 The following commands can be used to modify the schema, for instance when you want to test the schema validation, and you would like to have some schema discrepancies.
