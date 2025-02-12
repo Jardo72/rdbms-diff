@@ -21,13 +21,14 @@ CREATE TABLE t_stations (
 
 CREATE TABLE t_lines (
     uuid VARCHAR(36) NOT NULL,
-    label VARCHAR(5) NOT NULL UNIQUE,
+    label VARCHAR(5) NOT NULL,
     means_of_transport_uuid VARCHAR(36) NOT NULL,
     terminal_stop_one_uuid VARCHAR(36) NOT NULL,
 	terminal_stop_two_uuid VARCHAR(36) NOT NULL,
     CONSTRAINT t_lines_pk PRIMARY KEY(uuid),
+	CONSTRAINT t_lines_label UNIQUE(label),
     CONSTRAINT means_of_transport_fk FOREIGN KEY (means_of_transport_uuid) REFERENCES t_means_of_transport(uuid),
-    CHECK (terminal_stop_one_uuid <> terminal_stop_two_uuid),
+    CONSTRAINT distinct_terminal_stops_check CHECK (terminal_stop_one_uuid <> terminal_stop_two_uuid),
 	CONSTRAINT terminal_stop_one_fk FOREIGN KEY (terminal_stop_one_uuid) REFERENCES t_stations(uuid),
 	CONSTRAINT terminal_stop_two_fk FOREIGN KEY (terminal_stop_two_uuid) REFERENCES t_stations(uuid)
 );
@@ -40,10 +41,10 @@ CREATE TABLE t_edges (
     distance_min INTEGER NOT NULL,
     CONSTRAINT t_edges_pk PRIMARY KEY(uuid),
     CONSTRAINT line_fk FOREIGN KEY (line_uuid) REFERENCES t_lines(uuid) ON DELETE CASCADE,
-    CHECK (distance_min > 0),
+    CONSTRAINT distance_min_check CHECK (distance_min > 0),
     CONSTRAINT start_station_fk FOREIGN KEY (start_station_uuid) REFERENCES t_stations(uuid),
     CONSTRAINT end_station_fk FOREIGN KEY (end_station_uuid) REFERENCES t_stations(uuid),
-    CHECK (start_station_uuid <> end_station_uuid),
+    CONSTRAINT distinct_stations_check CHECK (start_station_uuid <> end_station_uuid),
     CONSTRAINT edge_uk UNIQUE(start_station_uuid, end_station_uuid, line_uuid)
 );
 
