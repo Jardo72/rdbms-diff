@@ -142,7 +142,7 @@ def print_comparison_results(config: Configuration, comparison_results: Sequence
     console.print(table)
     console.print()
     console.print(f"Source DB: [cyan]{config.source_db_config.url_without_password}[/cyan], schema [cyan]{config.source_db_config.schema}[/cyan]")
-    console.print(f"Target DB: [cyan]{config.source_db_config.url_without_password}[/cyan], schema [cyan]{config.source_db_config.schema}[/cyan]")
+    console.print(f"Target DB: [cyan]{config.target_db_config.url_without_password}[/cyan], schema [cyan]{config.target_db_config.schema}[/cyan]")
     if output_html_file:
         console.save_html(output_html_file)
 
