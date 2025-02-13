@@ -29,4 +29,10 @@ ALTER TABLE t_means_of_transport ADD COLUMN description VARCHAR(100);
 ALTER TABLE t_stations ADD COLUMN description VARCHAR(100);
 
 ALTER TABLE t_lines ADD COLUMN night_line BOOLEAN NOT NULL DEFAULT false;
+
+DROP SEQUENCE s_dummy_5;
+
+CREATE SEQUENCE s_extra_sequence INCREMENT BY 1 NO MAXVALUE START WITH 1 NO CYCLE;
+
+DROP VIEW v_lines;
 ```
