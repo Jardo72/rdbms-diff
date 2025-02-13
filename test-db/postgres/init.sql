@@ -48,6 +48,22 @@ CREATE TABLE t_edges (
     CONSTRAINT edge_uk UNIQUE(start_station_uuid, end_station_uuid, line_uuid)
 );
 
+CREATE SEQUENCE s_dummy_1 INCREMENT BY 1 NO MAXVALUE START WITH 1 NO CYCLE;
+
+CREATE SEQUENCE s_dummy_2 INCREMENT BY 1 NO MAXVALUE START WITH 1 NO CYCLE;
+
+CREATE SEQUENCE s_dummy_3 INCREMENT BY 1 NO MAXVALUE START WITH 1 NO CYCLE;
+
+CREATE SEQUENCE s_dummy_4 INCREMENT BY 1 NO MAXVALUE START WITH 1 NO CYCLE;
+
+CREATE SEQUENCE s_dummy_5 INCREMENT BY 1 NO MAXVALUE START WITH 1 NO CYCLE;
+
+CREATE VIEW v_lines AS
+SELECT l.label as label, m.identifier as identifier, s1.name as terminal_stop_one, s2.name as terminal_stop_two FROM t_lines l
+INNER JOIN t_means_of_transport m ON m.uuid = l.means_of_transport_uuid
+INNER JOIN t_stations s1 ON s1.uuid = l.terminal_stop_one_uuid
+INNER JOIN t_stations s2 ON s2.uuid = l.terminal_stop_two_uuid;
+
 
 /*********************************************************************************/
 /* Data                                                                          */
