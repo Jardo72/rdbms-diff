@@ -24,6 +24,14 @@ docker run -p 15432:5432 --env POSTGRES_DB=rdbms-diff --env POSTGRES_USER=test-u
 ## Modifications of Schema
 The following commands can be used to modify the schema, for instance when you want to test the schema validation, and you would like to have some schema discrepancies.
 ```sql
+CREATE TABLE t_persons (
+    id bigint NOT NULL,
+    first_name VARCHAR(50) NOT NULL,
+    last_name VARCHAR(50) NOT NULL,
+    CONSTRAINT t_persons_pk PRIMARY KEY(id)
+);
+
+
 ALTER TABLE t_means_of_transport ADD COLUMN description VARCHAR(100);
 
 ALTER TABLE t_stations ADD COLUMN description VARCHAR(100);
