@@ -260,7 +260,7 @@ class _NamesDiff:
         return len(self.names_missing_in_source_db())
 
     def names_missing_in_target_db(self) -> Tuple[str, ...]:
-        return tuple(self._source_names - self._source_names)
+        return tuple(self._source_names - self._target_names)
 
     def number_of_names_missing_in_target_db(self) -> int:
         return len(self.names_missing_in_target_db())
