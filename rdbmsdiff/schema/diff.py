@@ -335,7 +335,7 @@ class DBSchemaDiff:
         return self._materialized_views_diff.number_of_names_missing_in_source_db()
 
     def materialized_views_missing_in_target_db(self) -> Tuple[str, ...]:
-        return self._views_diff.names_missing_in_target_db()
+        return self._materialized_views_diff.names_missing_in_target_db()
 
     def number_of_materialized_views_missing_in_target_db(self) -> int:
         return self._materialized_views_diff.number_of_names_missing_in_target_db()
