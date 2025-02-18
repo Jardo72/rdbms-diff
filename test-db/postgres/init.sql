@@ -59,25 +59,25 @@ CREATE SEQUENCE s_dummy_4 INCREMENT BY 1 NO MAXVALUE START WITH 1 NO CYCLE;
 CREATE SEQUENCE s_dummy_5 INCREMENT BY 1 NO MAXVALUE START WITH 1 NO CYCLE;
 
 CREATE VIEW v_lines AS
-SELECT l.label as label, m.identifier as identifier, s1.name as terminal_stop_one, s2.name as terminal_stop_two FROM t_lines l
+SELECT l.label as line, m.identifier as identifier, s1.name as terminal_stop_one, s2.name as terminal_stop_two FROM t_lines l
 INNER JOIN t_means_of_transport m ON m.uuid = l.means_of_transport_uuid
 INNER JOIN t_stations s1 ON s1.uuid = l.terminal_stop_one_uuid
 INNER JOIN t_stations s2 ON s2.uuid = l.terminal_stop_two_uuid;
 
 CREATE VIEW v_edges AS
-SELECT l.label as label, s1.name as start_station, s2.name as end_station, e.distance_min as distance_min from t_edges e
+SELECT l.label as line, s1.name as start_station, s2.name as end_station, e.distance_min as distance_min from t_edges e
 INNER JOIN t_lines l ON l.uuid = e.line_uuid
 INNER JOIN t_stations s1 ON s1.uuid = e.start_station_uuid
 INNER JOIN t_stations s2 ON s2.uuid = e.end_station_uuid;
 
 CREATE MATERIALIZED VIEW mv_lines AS
-SELECT l.label as label, m.identifier as identifier, s1.name as terminal_stop_one, s2.name as terminal_stop_two FROM t_lines l
+SELECT l.label as line, m.identifier as identifier, s1.name as terminal_stop_one, s2.name as terminal_stop_two FROM t_lines l
 INNER JOIN t_means_of_transport m ON m.uuid = l.means_of_transport_uuid
 INNER JOIN t_stations s1 ON s1.uuid = l.terminal_stop_one_uuid
 INNER JOIN t_stations s2 ON s2.uuid = l.terminal_stop_two_uuid;
 
 CREATE MATERIALIZED VIEW mv_edges AS
-SELECT l.label as label, s1.name as start_station, s2.name as end_station, e.distance_min as distance_min from t_edges e
+SELECT l.label as line, s1.name as start_station, s2.name as end_station, e.distance_min as distance_min from t_edges e
 INNER JOIN t_lines l ON l.uuid = e.line_uuid
 INNER JOIN t_stations s1 ON s1.uuid = e.start_station_uuid
 INNER JOIN t_stations s2 ON s2.uuid = e.end_station_uuid;
