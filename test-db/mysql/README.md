@@ -12,12 +12,12 @@ docker build -t rdbmsdiff/test-mysql .
 ## How to Start the Docker Container
 The following command can be used to start the Docker container based on the above described Docker image. This command maps the container port to the host port 3306. 
 ```bash
-docker run -p 3306:3306 --env MYSQL_DB=rdbms-diff --env MYSQL_USER=test-user --env MYSQL_PASSWORD=test-pwd --env MYSQL_ROOT_PASSWORD=test-pwd  rdbmsdiff/test-mysql:latest
+docker run -p 3306:3306 --env MYSQL_DB=rdbms_diff --env MYSQL_ROOT_PASSWORD=test-pwd  rdbmsdiff/test-mysql:latest
 ```
 
 You can also use a different host port. The following command illustrates how to use the host port 13306.
 ```bash
-docker run -p 13306:3306 --env MYSQL_DB=rdbms-diff --env MYSQL_USER=test-user --env MYSQL_PASSWORD=test-pwd --env MYSQL_ROOT_PASSWORD=test-pwd  rdbmsdiff/test-mysql:latest
+docker run -p 13306:3306 --env MYSQL_DB=rdbms_diff --env MYSQL_USER=test-user --env MYSQL_PASSWORD=test-pwd --env MYSQL_ROOT_PASSWORD=test-pwd  rdbmsdiff/test-mysql:latest
 ```
 
 ## Modifications of Schema
