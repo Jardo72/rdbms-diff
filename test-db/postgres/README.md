@@ -45,6 +45,8 @@ DROP SEQUENCE s_dummy_5;
 CREATE SEQUENCE s_extra_sequence INCREMENT BY 1 NO MAXVALUE START WITH 1 NO CYCLE;
 
 DROP VIEW v_lines;
+
+DROP INDEX i_log_entry_timestamp;
 ```
 
 ## Modifications of Data
