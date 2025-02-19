@@ -19,7 +19,7 @@
 from sqlalchemy import text
 from sqlalchemy.orm import Session
 
-from rdbmsdiff.foundation import Configuration, DatabaseProperties, DBColumn, DBTable
+from rdbmsdiff.foundation import Configuration, DatabaseProperties, DBTable
 from .abstract_validator import AbstractValidator
 from .validation_details import ValidationQuery
 
@@ -40,6 +40,7 @@ class RecordValidator(AbstractValidator):
             columns += f"{column} ASC"
         engine = self.create_engine(db_properties)
         with Session(engine) as session:
+            # TODO: we should not involve LOB columns (BLOB, CLOB, TEXT, BYTEA etc.)
             statement = f"SELECT * FROM {self.table_name} ORDER BY {columns} LIMIT {self.limit}"
             result = session.execute(text(statement)).all()
             return ValidationQuery(
