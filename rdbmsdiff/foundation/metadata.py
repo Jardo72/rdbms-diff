@@ -186,9 +186,12 @@ class _MetaDataReader:
     def _read_sequences(self) -> Tuple[str, ...]:
         sequences = []
         self._console.print(f"[cyan]SEQUENCES[/cyan]")
-        for name in self._inspection.get_sequence_names(self._db_properties.schema):
-            print(name)
-            sequences.append(name)
+        try:
+            for name in self._inspection.get_sequence_names(self._db_properties.schema):
+                print(name)
+                sequences.append(name)
+        except NotImplementedError:
+            self._console.print(f"[yellow]Sequences not supported for this DB engine[/yellow]")
         self._console.print(f"Totally {len(sequences)} sequences")
         return tuple(sequences)
 
@@ -204,9 +207,12 @@ class _MetaDataReader:
     def _read_materialized_views(self) -> Tuple[str, ...]:
         materialized_views = []
         self._console.print(f"[cyan]MATERIALIZED VIEWS[/cyan]")
-        for name in self._inspection.get_materialized_view_names(self._db_properties.schema):
-            print(name)
-            materialized_views.append(name)
+        try:
+            for name in self._inspection.get_materialized_view_names(self._db_properties.schema):
+                print(name)
+                materialized_views.append(name)
+        except NotImplementedError:
+            self._console.print(f"[yellow]Materialized views not supported for this DB engine[/yellow]")
         self._console.print(f"Totally {len(materialized_views)} materialized views")
         return tuple(materialized_views)
 
