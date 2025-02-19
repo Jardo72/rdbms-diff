@@ -62,7 +62,7 @@ CREATE SEQUENCE s_dummy_5 INCREMENT BY 1 NO MAXVALUE START WITH 1 NO CYCLE;
 */
 
 CREATE VIEW v_lines AS
-SELECT l.label as label, m.identifier as identifier, s1.name as terminal_stop_one, s2.name as terminal_stop_two FROM t_lines l
+SELECT l.label as line, m.identifier as means_of_transport, s1.name as terminal_stop_one, s2.name as terminal_stop_two FROM t_lines l
 INNER JOIN t_means_of_transport m ON m.uuid = l.means_of_transport_uuid
 INNER JOIN t_stations s1 ON s1.uuid = l.terminal_stop_one_uuid
 INNER JOIN t_stations s2 ON s2.uuid = l.terminal_stop_two_uuid;
