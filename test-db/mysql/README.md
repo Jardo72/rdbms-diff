@@ -1,7 +1,7 @@
 # Test Database - Postgres
 
 ## Introduction
-The Dockerfile and the SQL script present in this directory can be used to create a Docker image with MySQL database which can be used for testing purposes. The SQL script creates a representative schema with several tables, views and sequences. The tables cover various datatypes, and they are enhanced with various constraints and indexes.
+The Dockerfile and the SQL script present in this directory can be used to create a Docker image with MySQL database which can be used for testing purposes. The SQL script creates a representative schema with several tables, views and sequences. The tables cover various datatypes, and they are enhanced with various constraints and indexes. Besides creating the schema, the script also inserts records into the database tables. In other words, the test database can be used to test schema validation as well as data validation.
 
 ## How to Build the Docker Image
 The following command can be used to build the Docker image.
