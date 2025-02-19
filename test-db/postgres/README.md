@@ -20,6 +20,8 @@ You can also use a different host port. The following command illustrates how to
 docker run -p 15432:5432 --env POSTGRES_DB=rdbms-diff --env POSTGRES_USER=test-user --env POSTGRES_PASSWORD=test-pwd  rdbmsdiff/test-postgres:latest
 ```
 
+The [config.ini](./config.ini) file is a configuration that can be used for testing purposes. It uses the two databases started by the two `docker run` commands above. The source database uses the host port 5432, the target database uses the host port 15432.
+
 
 ## Modifications of Schema
 The following commands can be used to modify the schema, for instance when you want to test the schema validation, and you would like to have some schema discrepancies.
