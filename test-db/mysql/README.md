@@ -23,7 +23,7 @@ docker run -p 13306:3306 --env MYSQL_DB=rdbms_diff --env MYSQL_ROOT_PASSWORD=tes
 The [config.ini](./config.ini) file is a configuration that can be used for testing purposes. It uses the two databases started by the two `docker run` commands above. The source database uses the host port 3306, the target database uses the host port 13306.
 
 ## Modifications of Schema
-The following commands can be used to modify the schema, for instance when you want to test the schema validation, and you would like to have some schema discrepancies.
+The following SQL commands can be used to modify the schema, for instance when you want to test the schema validation, and you would like to have some schema discrepancies.
 ```sql
 CREATE TABLE t_persons (
     id bigint NOT NULL,
@@ -42,7 +42,7 @@ DROP VIEW v_lines;
 ```
 
 ## Modifications of Data
-The following commands can be used to modify the data, for instance when you want to test data validation, and you would like to have some data discrepancies.
+The following SQL commands can be used to modify the data, for instance when you want to test data validation, and you would like to have some data discrepancies.
 ```sql
 INSERT INTO t_means_of_transport (uuid, identifier) VALUES ('9a7b5c46-d42e-4441-8950-bf24f846ef17', 'Trolleybus');
 

@@ -48,6 +48,16 @@ CREATE TABLE t_edges (
     CONSTRAINT edge_uk UNIQUE(start_station_uuid, end_station_uuid, line_uuid)
 );
 
+CREATE TABLE t_log_entries (
+	id BIGINT NOT NULL,
+	date_and_time TIMESTAMP NOT NULL,
+	severity SMALLINT NOT NULL,
+	service VARCHAR(30) NOT NULL,
+	message TEXT NOT NULL,
+    CONSTRAINT t_log_entries_pk PRIMARY KEY(id),
+	CONSTRAINT severity_check CHECK (severity >= 0 and severity <= 5)
+);
+
 CREATE SEQUENCE s_dummy_1 INCREMENT BY 1 NO MAXVALUE START WITH 1 NO CYCLE;
 
 CREATE SEQUENCE s_dummy_2 INCREMENT BY 1 NO MAXVALUE START WITH 1 NO CYCLE;
