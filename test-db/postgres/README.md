@@ -44,3 +44,13 @@ CREATE SEQUENCE s_extra_sequence INCREMENT BY 1 NO MAXVALUE START WITH 1 NO CYCL
 
 DROP VIEW v_lines;
 ```
+
+## Modifications of Data
+The following commands can be used to modify the data, for instance when you want to test data validation, and you would like to have some data discrepancies.
+```sql
+INSERT INTO t_means_of_transport (uuid, identifier) VALUES ('9a7b5c46-d42e-4441-8950-bf24f846ef17', 'Trolleybus');
+
+UPDATE t_means_of_transport SET identifier = 'Strassenbahn' where identifier = 'Tram';
+
+INSERT INTO t_stations (uuid, "name") VALUES ('31019303-f882-4e27-97c1-efcab885cb29', 'Dummy');
+```
