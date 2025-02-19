@@ -22,7 +22,7 @@ from typing import Any, Dict, Set, Tuple
 from rich.console import Console
 from sqlalchemy import create_engine, inspect, MetaData
 from sqlalchemy.sql.schema import CheckConstraint, ForeignKeyConstraint, PrimaryKeyConstraint, UniqueConstraint
-from sqlalchemy.sql.sqltypes import BIGINT, BOOLEAN, DATE, DOUBLE, FLOAT, INTEGER, SMALLINT, TEXT, TIME, TIMESTAMP, VARCHAR
+from sqlalchemy.sql.sqltypes import BIGINT, BLOB, BOOLEAN, CLOB, DATE, DOUBLE, FLOAT, INTEGER, SMALLINT, TEXT, TIME, TIMESTAMP, VARCHAR
 
 from .config import DatabaseProperties
 
@@ -69,6 +69,14 @@ class DBColumn:
     @property
     def is_date_time(self) -> bool:
         return self.is_date or self.is_time or self.is_timestamp
+
+    @property
+    def is_large_object(self) -> bool:
+        return (
+            isinstance(self.datatype, BLOB) or
+            isinstance(self.datatype, CLOB) or
+            isinstance(self.datatype, TEXT)
+        )
 
 
 @dataclass(frozen=True, slots=True)
