@@ -58,6 +58,8 @@ CREATE TABLE t_log_entries (
 	CONSTRAINT severity_check CHECK (severity >= 0 and severity <= 5)
 );
 
+CREATE INDEX i_log_entry_timestamp ON t_log_entries(date_and_time);
+
 CREATE TABLE t_datatype_mixture (
 	id BIGINT NOT NULL,
 	date_value DATE,
@@ -69,8 +71,6 @@ CREATE TABLE t_datatype_mixture (
 	char_value CHAR(3),
     CONSTRAINT t_datatype_mixture_pk PRIMARY KEY(id)
 );
-
-CREATE INDEX i_log_entry_timestamp ON t_log_entries(date_and_time);
 
 CREATE SEQUENCE s_dummy_1 INCREMENT BY 1 NO MAXVALUE START WITH 1 NO CYCLE;
 
@@ -1004,4 +1004,8 @@ INSERT INTO t_datatype_mixture (id, date_value, time_value, timestamp_value, flo
 	(2, DATE '2025-01-31', TIME '03:54:29', TIMESTAMP '2025-01-31 03:54:29', 2.91, 9.42, true, 'CZE'),
 	(3, DATE '2024-11-17', TIME '21:04:31', TIMESTAMP '2024-11-17 21:04:31', 1097.05, 9793.35, true, 'AUT'),
 	(4, NULL, NULL, NULL, 129758.91, 912935.80, false, 'FIN'),
-	(5, DATE '2012-09-20', TIME '13:09:47', TIMESTAMP '2012-09-20 13:09:47', NULL, NULL, NULL, NULL);
+	(5, DATE '2012-09-20', TIME '13:09:47', TIMESTAMP '2012-09-20 13:09:47', NULL, NULL, NULL, NULL),
+	(6, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(7, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(8, DATE '2020-01-07', NULL, NULL, NULL, NULL, false, 'SVK'),
+	(9, NULL, TIME '03:54:29', NULL, 0, 1000000, NULL, NULL);

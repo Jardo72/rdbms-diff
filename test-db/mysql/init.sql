@@ -49,6 +49,18 @@ CREATE TABLE t_edges (
     CONSTRAINT edge_uk UNIQUE(start_station_uuid, end_station_uuid, line_uuid)
 );
 
+CREATE TABLE t_datatype_mixture (
+	id BIGINT NOT NULL,
+	date_value DATE,
+	time_value TIME,
+	timestamp_value TIMESTAMP,
+	float_value FLOAT,
+	double_value FLOAT,
+	boolean_value BOOLEAN,
+	char_value CHAR(3),
+    CONSTRAINT t_datatype_mixture_pk PRIMARY KEY(id)
+);
+
 /* TODO: this will most likely not work
 CREATE SEQUENCE s_dummy_1 INCREMENT BY 1 NO MAXVALUE START WITH 1 NO CYCLE;
 
@@ -952,3 +964,16 @@ INSERT INTO t_edges (uuid,start_station_uuid,end_station_uuid,line_uuid,distance
 	 ('a52672e4-7da2-4fe8-bf1d-092f79ce95fa','eed95b18-acbd-4900-9e5b-23b43bbc454c','7b66ad8a-0439-4bd2-868e-4bb3b681e601','b1b1ddf3-5c85-4059-91c0-f4c6686daebd',1),
 	 ('f8766965-4579-4de0-a9fb-06be982c0207','eed95b18-acbd-4900-9e5b-23b43bbc454c','368bf51e-bd0a-4320-b731-01a62a089450','b1b1ddf3-5c85-4059-91c0-f4c6686daebd',2),
 	 ('c2758bfd-7a31-4cb2-bb2a-4e921dc99636','368bf51e-bd0a-4320-b731-01a62a089450','eed95b18-acbd-4900-9e5b-23b43bbc454c','b1b1ddf3-5c85-4059-91c0-f4c6686daebd',2);
+
+
+
+INSERT INTO t_datatype_mixture (id, date_value, time_value, timestamp_value, float_value, double_value, boolean_value, char_value) VALUES
+	(1, DATE '2025-02-20', TIME '15:29:47', TIMESTAMP '2025-02-20 15:29:47', 3.14, 2.78, false, 'SVK'),
+	(2, DATE '2025-01-31', TIME '03:54:29', TIMESTAMP '2025-01-31 03:54:29', 2.91, 9.42, true, 'CZE'),
+	(3, DATE '2024-11-17', TIME '21:04:31', TIMESTAMP '2024-11-17 21:04:31', 1097.05, 9793.35, true, 'AUT'),
+	(4, NULL, NULL, NULL, 129758.91, 912935.80, false, 'FIN'),
+	(5, DATE '2012-09-20', TIME '13:09:47', TIMESTAMP '2012-09-20 13:09:47', NULL, NULL, NULL, NULL),
+	(6, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(7, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(8, DATE '2020-01-07', NULL, NULL, NULL, NULL, false, 'SVK'),
+	(9, NULL, TIME '03:54:29', NULL, 0, 1000000, NULL, NULL);
