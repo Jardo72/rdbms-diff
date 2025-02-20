@@ -49,6 +49,18 @@ CREATE TABLE t_edges (
     CONSTRAINT edge_uk UNIQUE(start_station_uuid, end_station_uuid, line_uuid)
 );
 
+CREATE TABLE t_log_entries (
+	id BIGINT NOT NULL,
+	date_and_time TIMESTAMP NOT NULL,
+	severity SMALLINT NOT NULL,
+	service VARCHAR(30) NOT NULL,
+	message TEXT NOT NULL,
+    CONSTRAINT t_log_entries_pk PRIMARY KEY(id),
+	CONSTRAINT severity_check CHECK (severity >= 0 and severity <= 5)
+);
+
+CREATE INDEX i_log_entry_timestamp ON t_log_entries(date_and_time);
+
 CREATE TABLE t_datatype_mixture (
 	id BIGINT NOT NULL,
 	date_value DATE,
@@ -964,6 +976,17 @@ INSERT INTO t_edges (uuid,start_station_uuid,end_station_uuid,line_uuid,distance
 	 ('a52672e4-7da2-4fe8-bf1d-092f79ce95fa','eed95b18-acbd-4900-9e5b-23b43bbc454c','7b66ad8a-0439-4bd2-868e-4bb3b681e601','b1b1ddf3-5c85-4059-91c0-f4c6686daebd',1),
 	 ('f8766965-4579-4de0-a9fb-06be982c0207','eed95b18-acbd-4900-9e5b-23b43bbc454c','368bf51e-bd0a-4320-b731-01a62a089450','b1b1ddf3-5c85-4059-91c0-f4c6686daebd',2),
 	 ('c2758bfd-7a31-4cb2-bb2a-4e921dc99636','368bf51e-bd0a-4320-b731-01a62a089450','eed95b18-acbd-4900-9e5b-23b43bbc454c','b1b1ddf3-5c85-4059-91c0-f4c6686daebd',2);
+
+
+
+INSERT INTO t_log_entries (id, date_and_time, severity, service, message) VALUES
+	(1, TIMESTAMP '2024-02-16 20:38:40', 2, 'search-service', 'Message content not relevant'),
+	(2, TIMESTAMP '2024-02-16 20:39:17', 1, 'admin-service', 'Dummy log message'),
+	(3, TIMESTAMP '2024-02-17 06:09:43', 3, 'admin-service', 'Another dummy log message'),
+	(4, TIMESTAMP '2024-02-17 08:31:05', 1, 'search-service', 'Who cares about the event represented by this log entry'),
+	(5, TIMESTAMP '2024-02-17 11:54:18', 4, 'admin-service', 'Yet another dummy log message'),
+	(6, TIMESTAMP '2024-02-17 16:27:28', 2, 'monitoring-service', 'Unable to get metrics'),
+	(7, TIMESTAMP '2024-02-18 04:33:06', 1, 'admin-service', 'Nothing to do - I am boring');
 
 
 
