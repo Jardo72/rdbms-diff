@@ -11,6 +11,8 @@ The following comparisons are provided:
 * **Record count comparison** is able to detect situations when the overall number of records in a table in one of the database differs from the overall number of records in the same table in the other database.
 * **Data comparison** is able to detect situations when a record in one of the databases has at least one column value distinct from its counterpart in the other database.
 
+Implementing a completely generic tool that would be able to compare any combination of database engines, all possible datatypes etc. is more or less impossible (or at least very expensive in terms of implementation effort). Therefore, the tool should rather be seen as a solid foundation which can be forked and customized if it does not fully support some specific scenario.
+
 ## Source Code Organization
 The source code is divided to four Python packages:
 * [rdbmsdiff.foundation](./rdbmsdiff/foundation) package provides functionality common to two or more comparison tools. The classes and functions provided by this package are reusable, and the comparison tools are built on top of this reusable functionality. For instance, each of the three tools needs to read some meta-information from the compared databases. Therefore, the corresponding functionality is provided by the foundation package.
@@ -22,6 +24,11 @@ As outlined above, the packages implementing the three comparison tools depend o
 
 
 ## Dependencies
+All 3rd party dependencies (i.e. [pypi.org](https://pypi.org) packages) are documented in the [requirements.txt](./requirements.txt) file. If these packages are installed, all three comparison tools should work. The following list provides an overview of all dependencies and their purpose.
+* [rich](https://pypi.org/project/rich/) package is used to generate pretty CLI output and HTML reports.
+* [SQLAlchemy](https://pypi.org/project/SQLAlchemy/) is used as vendor independent database interface that ensures the capability of the comparison tools to interact with various database engines.
+* [psycopg_binary](https://pypi.org/project/psycopg-binary/) is a database adapter for PostgreSQL databases.
+* [mysqlclient](https://pypi.org/project/mysqlclient/) is a database adapter for MySQL databases.
 
 TODO:
 - SQLAlchemy => meta-info about schema retrieved in vendor independent way
