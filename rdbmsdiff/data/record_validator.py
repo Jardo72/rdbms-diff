@@ -33,15 +33,23 @@ class RecordValidator(AbstractValidator):
         if not self.table.has_primary_key:
             return ValidationQuery(sql="N/A", result_set="N/A")
 
-        columns = ""
+        pk_columns = ""
         for column in self.table.primary_key_constraints[0].columns:
-            if columns:
-                columns += ", "
-            columns += f"{column} ASC"
+            if pk_columns:
+                pk_columns += ", "
+            pk_columns += f"{column} ASC"
+        
+        select_columns = ""
+        for column in self.table.columns:
+            if column.is_large_object:
+                # TODO: consider using MD5 function for large objects (investigation needed)
+                continue
+            if select_columns:
+                select_columns += ", "
+            select_columns += f"{column.name}"
         engine = self.create_engine(db_properties)
         with Session(engine) as session:
-            # TODO: we should not involve LOB columns (BLOB, CLOB, TEXT, BYTEA etc.)
-            statement = f"SELECT * FROM {self.table_name} ORDER BY {columns} LIMIT {self.limit}"
+            statement = f"SELECT {select_columns} FROM {self.table_name} ORDER BY {pk_columns} LIMIT {self.limit}"
             result = session.execute(text(statement)).all()
             return ValidationQuery(
                 sql=statement,
