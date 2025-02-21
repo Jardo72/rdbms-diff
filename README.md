@@ -11,26 +11,37 @@ The following comparisons are provided:
 * **Record count comparison** is able to detect situations when the overall number of records in a table in one of the database differs from the overall number of records in the same table in the other database.
 * **Data comparison** is able to detect situations when a record in one of the databases has at least one column value distinct from its counterpart in the other database.
 
+## Source Code Organization
+The source code is divided to four Python packages:
+* [rdbmsdiff.foundation](./rdbmsdiff/foundation) package provides functionality common to two or more comparison tools. The classes and functions provided by this package are reusable, and the comparison tools are built on top of this reusable functionality. For instance, each of the three tools needs to read some meta-information from the compared databases. Therefore, the corresponding functionality is provided by the foundation package.
+* [rdbmsdiff.schema](./rdbmsdiff/schema) package implements the comparison tool providing the schema comparison.
+* [rdbmsdiff.recordcount](./rdbmsdiff/recordcount) implements the comparison tool comparing the overall number of records per table.
+* [rdbmsdiff.data](./rdbmsdiff/data) implements the comparison tool comparing the records and detecting discrepancies in column values.
+
+As outlined above, the packages implementing the three comparison tools depend on the foundation package. However, the packages implementing the comparison tools are independent of each other.
+
+
+## Dependencies
+
 TODO:
 - SQLAlchemy => meta-info about schema retrieved in vendor independent way
 - drivers for some engines present in requirements.txt
 - eventual need for customization of data validation
-- source code organization (foundation aka commons + 3 other packages)
 - test databases, Docker images
 
-## Schema Comparison
+## Schema Comparison Tool
 The following command will display instructions about how to start schema comparison.
 ```
 python -m rdbmsdiff.schema.main -h
 ```
 
-## Record Count Comparison
+## Record Count Comparison Tool
 The following command will display instructions about how to start comparison of record count for particular tables.
 ```
 python -m rdbmsdiff.recordcount.main -h
 ```
 
-## Data Comparison
+## Data Comparison Tool
 The following command will display instructions about how to start data comparison.
 ```
 python -m rdbmsdiff.data.main <config-file> -h
