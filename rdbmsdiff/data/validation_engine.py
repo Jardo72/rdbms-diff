@@ -20,7 +20,7 @@ from typing import Tuple
 
 from rich.console import Console
 
-from rdbmsdiff.foundation import Configuration, DBSchema, DBTable
+from rdbmsdiff.foundation import Configuration, DBSchema, DBTable, Stopwatch
 
 from .abstract_validator import AbstractValidator
 from .boolean_validator import BooleanValidator
@@ -71,11 +71,16 @@ class ValidationEngine:
 
     def validate(self) -> None:
         self._console.print()
-        self._console.print("[cyan]Going to validate tables...[/cyan]")
+        self._console.print("[cyan]Going to compare tables...[/cyan]")
         table_count = len(self._source_db_meta_data.tables)
-        with self._console.status(f"Validating tables..."):
+        overall_stopwatch = Stopwatch.start()
+        with self._console.status(f"Comparing tables..."):
             for index, table in enumerate(self._source_db_meta_data.tables):
                 # TODO: check if the table is present in the target DB
+                stopwatch = Stopwatch.start()
                 details = self._validate_single_table(table)
+                elapsed_time = stopwatch.elapsed_time_as_str()
                 self._report.add(details)
-                self._console.print(f"{table.name} ({index + 1}/{table_count}) validated")
+                self._console.print(f"{table.name} ({index + 1}/{table_count}) compared (totally {details.overall_validation_count} comparisons, duration = {elapsed_time})")
+        overall_elapsed_time = overall_stopwatch.elapsed_time_as_str()
+        print(f"Overall duration = {overall_elapsed_time}")
