@@ -91,18 +91,6 @@ CREATE TABLE t_datatype_mixture (
     CONSTRAINT t_datatype_mixture_pk PRIMARY KEY(id)
 );
 
-/* TODO: this will most likely not work
-CREATE SEQUENCE s_dummy_1 INCREMENT BY 1 NO MAXVALUE START WITH 1 NO CYCLE;
-
-CREATE SEQUENCE s_dummy_2 INCREMENT BY 1 NO MAXVALUE START WITH 1 NO CYCLE;
-
-CREATE SEQUENCE s_dummy_3 INCREMENT BY 1 NO MAXVALUE START WITH 1 NO CYCLE;
-
-CREATE SEQUENCE s_dummy_4 INCREMENT BY 1 NO MAXVALUE START WITH 1 NO CYCLE;
-
-CREATE SEQUENCE s_dummy_5 INCREMENT BY 1 NO MAXVALUE START WITH 1 NO CYCLE;
-*/
-
 CREATE VIEW v_lines AS
 SELECT l.label as line, m.identifier as means_of_transport, s1.name as terminal_stop_one, s2.name as terminal_stop_two FROM t_lines l
 INNER JOIN t_means_of_transport m ON m.uuid = l.means_of_transport_uuid
