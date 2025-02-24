@@ -91,6 +91,10 @@ CREATE TABLE t_datatype_mixture (
     CONSTRAINT t_datatype_mixture_pk PRIMARY KEY(id)
 );
 
+-- by default, if a NULL value is assigned to a TIMESTAMP field, the current date and time is assigned instead
+-- see also https://mariadb.com/kb/en/null-values/
+ALTER TABLE t_datatype_mixture MODIFY timestamp_value TIMESTAMP NULL;
+
 CREATE SEQUENCE s_dummy_1 INCREMENT BY 1 NO MAXVALUE START WITH 1 NOCYCLE;
 
 CREATE SEQUENCE s_dummy_2 INCREMENT BY 1 NO MAXVALUE START WITH 1 NOCYCLE;
