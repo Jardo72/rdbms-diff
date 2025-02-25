@@ -33,15 +33,13 @@ All 3rd party dependencies (i.e. [pypi.org](https://pypi.org) packages) are docu
 
 If you would like to use the comparison tools for other database engine like Oracle, you will have to take care about the corresponding database adataper(s).
 
-TODO:
-- SQLAlchemy => meta-info about schema retrieved in vendor independent way
-- eventual need for customization of data validation
-
 ## Schema Comparison Tool
 The following command will display instructions about how to start schema comparison.
 ```
 python -m rdbmsdiff.schema.main -h
 ```
+
+Meta-information about schema is retrieved using SQLAlchemy API. In other words, the comparison tools do not query any vendor-specific system views directly. This approach keeps the reading of schema information vendor independent.
 
 ## Record Count Comparison Tool
 The following command will display instructions about how to start comparison of record count for particular tables.
@@ -54,6 +52,9 @@ The following command will display instructions about how to start data comparis
 ```
 python -m rdbmsdiff.data.main <config-file> -h
 ```
+
+TODO:
+- eventual need for customization of data validation
 
 ## Test Databases (Docker Images)
 The [test-db](./test-db) directory structure contains Dockerfiles and SQL scripts that can be used to build Docker images with test databases based on various database engines. These databases can be used to test the tools comprising RDBMS Diff.
