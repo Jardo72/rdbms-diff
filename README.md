@@ -29,12 +29,13 @@ All 3rd party dependencies (i.e. [pypi.org](https://pypi.org) packages) are docu
 * [SQLAlchemy](https://pypi.org/project/SQLAlchemy/) is used as vendor independent database interface that ensures the capability of the comparison tools to interact with various database engines.
 * [psycopg_binary](https://pypi.org/project/psycopg-binary/) is a database adapter for PostgreSQL databases.
 * [mysqlclient](https://pypi.org/project/mysqlclient/) is a database adapter for MySQL databases.
+* [mariadb](https://pypi.org/project/mariadb) is a database adapter for MariaDB databases.
+
+If you would like to use the comparison tools for other database engine like Oracle, you will have to take care about the corresponding database adataper(s).
 
 TODO:
 - SQLAlchemy => meta-info about schema retrieved in vendor independent way
-- drivers for some engines present in requirements.txt
 - eventual need for customization of data validation
-- test databases, Docker images
 
 ## Schema Comparison Tool
 The following command will display instructions about how to start schema comparison.
