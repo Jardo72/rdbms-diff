@@ -40,8 +40,7 @@ python -m rdbmsdiff.schema.main -h
 ```
 
 The comparison generates a summary to the standard output (see the screenshot below).
-TODO: screenshot
-![schema-comparison-output](./images/)
+![schema-comparison-output](./images/schema-comparison-stdout.png)
 
 Meta-information about schema is retrieved using SQLAlchemy API. In other words, the comparison tools do not query any vendor-specific system views directly. This approach keeps the reading of schema information vendor independent.
 
@@ -52,8 +51,7 @@ python -m rdbmsdiff.recordcount.main -h
 ```
 
 The comparison generates a summary to the standard output (see the screenshot below). The generated summary can also be duplicated to an HTML file.
-TODO: screenshot
-![record-count-comparison-output](./images/)
+![record-count-comparison-output](./images/record-count-comparison-stdout.png)
 
 ## Data Comparison Tool
 The following command will display instructions about how to start data comparison.
@@ -62,7 +60,7 @@ python -m rdbmsdiff.data.main -h
 ```
 
 The comparison generates a summary to the standandard output (see the screenshot below).
-![data-comparison-output](./images/)
+![data-comparison-output](./images/data-comparison-stdout.png)
 
 TODO:
 - eventual need for customization of data validation
