@@ -41,12 +41,12 @@ class RecordValidator(AbstractValidator):
         
         select_columns = ""
         for column in self.table.columns:
-            if column.is_large_object:
-                # TODO: consider using MD5 function for large objects (investigation needed)
-                continue
             if select_columns:
                 select_columns += ", "
-            select_columns += f"{column.name}"
+            if column.is_large_object:
+                select_columns += f"UPPER(MD5({column.name}))"
+            else:
+                select_columns += column.name
         engine = self.create_engine(db_properties)
         with Session(engine) as session:
             statement = f"SELECT {select_columns} FROM {self.table_name} ORDER BY {pk_columns} LIMIT {self.limit}"
