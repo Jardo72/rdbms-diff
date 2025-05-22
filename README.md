@@ -42,6 +42,11 @@ python -m rdbmsdiff.schema.main -h
 The comparison generates a summary to the standard output (see the screenshot below).
 ![schema-comparison-output](./images/schema-comparison-stdout.png)
 
+The generated summary can optionally be duplicated to an HTML file. The HTML summary hasa exactly the same structure as the summary written to the standard output.
+![schema-comparison-html](./images/schema-comparison-html.png)
+
+TODO: describe the report written to JSON file
+
 Meta-information about schema is retrieved using SQLAlchemy API. In other words, the comparison tools do not query any vendor-specific system views directly. This approach keeps the reading of schema information vendor independent.
 
 ## Record Count Comparison Tool
@@ -53,6 +58,10 @@ python -m rdbmsdiff.recordcount.main -h
 The comparison generates a summary to the standard output (see the screenshot below). The generated summary can also be duplicated to an HTML file.
 ![record-count-comparison-output](./images/record-count-comparison-stdout.png)
 
+The generated summary can optionally be duplicated to an HTML file. The HTML summary hasa exactly the same structure as the summary written to the standard output.
+![record-count-comparison-html](./images/record-count-comparison-html.png)
+
+
 ## Data Comparison Tool
 The following command will display instructions about how to start data comparison.
 ```
@@ -62,7 +71,11 @@ python -m rdbmsdiff.data.main -h
 The comparison generates a summary to the standandard output (see the screenshot below).
 ![data-comparison-output](./images/data-comparison-stdout.png)
 
+The generated summary can optionally be duplicated to an HTML file. The HTML summary hasa exactly the same structure as the summary written to the standard output.
+![data-comparison-html](./images/data-comparison-html.png)
+
 TODO:
+- describe the report written to TXT file
 - eventual need for customization of data validation
 
 ## Test Databases (Docker Images)
