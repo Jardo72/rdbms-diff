@@ -76,7 +76,10 @@ class ValidationEngine:
         overall_stopwatch = Stopwatch.start()
         with self._console.status(f"Comparing tables..."):
             for index, table in enumerate(self._source_db_meta_data.tables):
-                # TODO: check if the table is present in the target DB
+                if not self._target_db_meta_data.has_table(table):
+                    # TOOD: inform the report
+                    self._console.print(f"{table.name} ({index + 1}/{table_count}) missing in target database")
+                    continue
                 stopwatch = Stopwatch.start()
                 details = self._validate_single_table(table)
                 elapsed_time = stopwatch.elapsed_time_as_str()

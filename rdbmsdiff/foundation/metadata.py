@@ -147,6 +147,12 @@ class DBSchema:
     views: Tuple[str, ...]
     materialized_views: Tuple[str, ...]
 
+    def has_table(self, table: DBTable) -> bool:
+        for my_table in self.tables:
+            if my_table.name == table.name:
+                return True
+        return False
+
 
 class _MetaDataReader:
 
