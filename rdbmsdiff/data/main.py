@@ -76,8 +76,8 @@ def validate(config: Configuration, source_db_meta_data: DBSchema, target_db_met
             report.close()
 
 
-def print_summary(statistics: Statistics, summary_html_file: str) -> None:
-    console = Console(record=True)
+def print_summary(config: Configuration, statistics: Statistics, summary_html_file: str) -> None:
+    console = Console(record=True, highlight=False)
     table = Table(title="Data Comparison Summary", show_lines=True)
 
     table.add_column("Subject", justify="left")
@@ -100,6 +100,9 @@ def print_summary(statistics: Statistics, summary_html_file: str) -> None:
 
     console.print()
     console.print(table)
+    console.print()
+    console.print(f"Source DB: [cyan]{config.source_db_config.url_without_password}[/cyan], schema [cyan]{config.source_db_config.schema}[/cyan]")
+    console.print(f"Target DB: [cyan]{config.target_db_config.url_without_password}[/cyan], schema [cyan]{config.target_db_config.schema}[/cyan]")
     if summary_html_file:
         console.save_html(summary_html_file)
 
@@ -111,7 +114,7 @@ def main() -> None:
         source_db_meta_data = read_db_meta_data(config.source_db_config)
         target_db_meta_data = read_db_meta_data(config.target_db_config)
         statistics = validate(config, source_db_meta_data, target_db_meta_data, cmd_line_args.report)
-        print_summary(statistics, cmd_line_args.summary_html_file)
+        print_summary(config, statistics, cmd_line_args.summary_html_file)
     except ReadConfigurationError as e:
         handle_configuration_error(e)
 
