@@ -23,7 +23,7 @@ from typing import Tuple
 from rich.console import Console
 from rich.table import Table
 
-from rdbmsdiff.foundation import ReadConfigurationError, Status
+from rdbmsdiff.foundation import Configuration, ReadConfigurationError, Status
 from rdbmsdiff.foundation import epilog, handle_configuration_error, read_config, read_db_meta_data
 from .diff import DBSchemaDiff
 from .report import write_report
@@ -97,7 +97,7 @@ def create_summary_rows(db_schema_diff: DBSchemaDiff) -> Tuple[SummaryRow, ...]:
     return tuple(result)
 
 
-def print_summary(db_schema_diff: DBSchemaDiff, summary_html_file: str) -> None:
+def print_summary(config: Configuration, db_schema_diff: DBSchemaDiff, summary_html_file: str) -> None:
     console = Console(record=True)
     table = Table(title="Schema Comparison Summary", show_lines=True)
 
@@ -114,6 +114,9 @@ def print_summary(db_schema_diff: DBSchemaDiff, summary_html_file: str) -> None:
 
     console.print()
     console.print(table)
+    console.print()
+    console.print(f"Source DB: [cyan]{config.source_db_config.url_without_password}[/cyan], schema [cyan]{config.source_db_config.schema}[/cyan]")
+    console.print(f"Target DB: [cyan]{config.target_db_config.url_without_password}[/cyan], schema [cyan]{config.target_db_config.schema}[/cyan]")
     if summary_html_file:
         console.save_html(summary_html_file)
 
@@ -126,7 +129,7 @@ def main() -> None:
         target_meta_data = read_db_meta_data(config.target_db_config)
         schema_diff = DBSchemaDiff(source_schema=source_meta_data, target_schema=target_meta_data)
         write_report(schema_diff, cmd_line_args.diff_report)
-        print_summary(schema_diff, cmd_line_args.summary_html_file)
+        print_summary(config, schema_diff, cmd_line_args.summary_html_file)
     except ReadConfigurationError as e:
         handle_configuration_error(e)
 
