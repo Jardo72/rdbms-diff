@@ -158,9 +158,6 @@ class _MetaDataReader:
 
     def __init__(self, db_properties: DatabaseProperties, console: Console) -> None:
         self._db_properties = db_properties
-        # TODO
-        # it might make sense to promote this class to context manager and move this code
-        # to its initialization method
         self._engine = create_engine(url=db_properties.url_with_password)
         self._inspection = inspect(self._engine)
         self._meta_data = MetaData(schema=db_properties.schema)
@@ -236,6 +233,5 @@ def read_db_meta_data(db_properties: DatabaseProperties) -> DBSchema:
     console.print()
     console.print(f"Going to read meta-info from [cyan]{db_properties.url_without_password}[/cyan], schema [cyan]{db_properties.schema}[/cyan]")
 
-    # TODO: chances are we should take care about closing the reader
     reader = _MetaDataReader(db_properties, console)
     return reader.read_meta_data()
