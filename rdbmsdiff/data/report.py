@@ -18,6 +18,8 @@
 
 from dataclasses import dataclass
 
+from rdbmsdiff.foundation import DBTable, Status
+
 from .validation_details import ColumnValidationDetails, TableValidationDetails, ValidationResult
 
 
@@ -37,12 +39,16 @@ class _Statistics:
         self._overall_validation_count = 0
         self._failed_validation_count = 0
 
-    def add(self, details: TableValidationDetails) -> None:
+    def add_validation_details(self, details: TableValidationDetails) -> None:
         self._overall_table_count += 1
         if details.result is ValidationResult.FAILED:
             self._failed_table_count += 1
         self._overall_validation_count += details.overall_validation_count
         self._failed_validation_count += details.failed_validation_count
+
+    def add_missing_table(self) -> None:
+        self._overall_table_count += 1
+        self._failed_table_count += 1
 
     def get_snapshot(self) -> Statistics:
         return Statistics(
@@ -82,8 +88,17 @@ class Report:
         self._file.write(details.target_query_details.result_set)
         self._file.write("\n\n")
 
-    def add(self, table_details: TableValidationDetails) -> None:
-        self._statistics.add(table_details)
+    def add_missing_table(self, table: DBTable) -> None:
+        self._statistics.add_missing_table()
+        self._file.write(f"{90 * '='}\n")
+        self._file.write(f"= Table:  {table.name}\n")
+        self._file.write(f"= Status: {Status.ERROR.name} (table missing in the target database)\n")
+        self._file.write(f"{90 * '='}\n")
+        self._file.write("\n")
+        self._file.flush()
+
+    def add_validation_details(self, table_details: TableValidationDetails) -> None:
+        self._statistics.add_validation_details(table_details)
         self._write_table_header(table_details)
         for column_details in table_details.column_validations_details:
             self._write_column_validation_details(column_details)

@@ -77,13 +77,13 @@ class ValidationEngine:
         with self._console.status(f"Comparing tables..."):
             for index, table in enumerate(self._source_db_meta_data.tables):
                 if not self._target_db_meta_data.has_table(table):
-                    # TOOD: inform the report
+                    self._report.add_missing_table(table)
                     self._console.print(f"{table.name} ({index + 1}/{table_count}) missing in target database")
                     continue
                 stopwatch = Stopwatch.start()
                 details = self._validate_single_table(table)
                 elapsed_time = stopwatch.elapsed_time_as_str()
-                self._report.add(details)
+                self._report.add_validation_details(details)
                 self._console.print(f"{table.name} ({index + 1}/{table_count}) compared (totally {details.overall_validation_count} comparisons, duration = {elapsed_time})")
         overall_elapsed_time = overall_stopwatch.elapsed_time_as_str()
         print(f"Overall duration = {overall_elapsed_time}")
