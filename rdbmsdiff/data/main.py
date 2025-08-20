@@ -20,6 +20,7 @@ from argparse import ArgumentParser, Namespace, RawTextHelpFormatter
 
 from rich.console import Console
 from rich.table import Table
+from rich.text import Text
 
 from rdbmsdiff.foundation import Configuration, DBSchema, ReadConfigurationError, Status
 from rdbmsdiff.foundation import epilog, handle_configuration_error, read_config, read_db_meta_data
@@ -78,12 +79,12 @@ def validate(config: Configuration, source_db_meta_data: DBSchema, target_db_met
 
 def print_summary(config: Configuration, statistics: Statistics, summary_html_file: str) -> None:
     console = Console(record=True, highlight=False)
-    table = Table(title="Data Comparison Summary", show_lines=True)
+    table = Table(title="[cyan]Data Comparison Summary[/]", show_lines=True)
 
-    table.add_column("Subject", justify="left")
-    table.add_column("Overall Count", justify="right")
-    table.add_column("Failure Count", justify="right")
-    table.add_column("Status", justify="center")
+    table.add_column(Text("Subject", justify="center"), justify="left")
+    table.add_column(Text("Overall Count", justify="center"), justify="right")
+    table.add_column(Text("Failure Count", justify="center"), justify="right")
+    table.add_column(Text("Status", justify="center"), justify="center")
 
     table.add_row(
         "Tables",

@@ -22,6 +22,7 @@ from typing import Tuple
 
 from rich.console import Console
 from rich.table import Table
+from rich.text import Text
 
 from rdbmsdiff.foundation import Configuration, ReadConfigurationError, Status
 from rdbmsdiff.foundation import epilog, handle_configuration_error, read_config, read_db_meta_data
@@ -98,12 +99,12 @@ def create_summary_rows(db_schema_diff: DBSchemaDiff) -> Tuple[SummaryRow, ...]:
 
 
 def print_summary(config: Configuration, db_schema_diff: DBSchemaDiff, summary_html_file: str) -> None:
-    console = Console(record=True)
-    table = Table(title="Schema Comparison Summary", show_lines=True)
+    console = Console(record=True, highlight=False)
+    table = Table(title="[cyan]Schema Comparison Summary[/]", show_lines=True)
 
-    table.add_column("Discrepancy Type", justify="left")
-    table.add_column("Count", justify="right")
-    table.add_column("Status", justify="center")
+    table.add_column(Text("Discrepancy Type", justify="center"), justify="left")
+    table.add_column(Text("Count", justify="center"), justify="right")
+    table.add_column(Text("Status", justify="center"), justify="center")
 
     for row in create_summary_rows(db_schema_diff):
         table.add_row(

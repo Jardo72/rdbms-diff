@@ -23,6 +23,7 @@ from typing import Dict, Optional, Sequence, Tuple
 
 from rich.console import Console
 from rich.table import Table
+from rich.text import Text
 from sqlalchemy import create_engine, func, select
 from sqlalchemy import MetaData
 from sqlalchemy.orm import Session
@@ -123,12 +124,12 @@ def compare_record_counts(source_record_counts: Dict[str, int], target_record_co
 
 def print_comparison_results(config: Configuration, comparison_results: Sequence[ComparisonResult], output_html_file: str) -> None:
     console = Console(record=True, highlight=False)
-    table = Table(title="Record Count Comparison Results", show_lines=True)
+    table = Table(title="[cyan]Record Count Comparison Results[/]", show_lines=True)
 
-    table.add_column("Table", justify="left")
-    table.add_column("Source DB Record Count", justify="right")
-    table.add_column("Target DB Record Count", justify="right")
-    table.add_column("Status", justify="center")
+    table.add_column(Text("Table", justify="center"), justify="left")
+    table.add_column(Text("Source DB Record Count", justify="center"), justify="right")
+    table.add_column(Text("Target DB Record Count", justify="center"), justify="right")
+    table.add_column(Text("Status", justify="center"), justify="center")
 
     for result in comparison_results:
         table.add_row(

@@ -1,5 +1,6 @@
 mariadb~=1.1.12
 mysqlclient~=2.2.7
+psycopg~=3.2.4
 psycopg_binary~=3.2.4
 rich~=13.9.4
 SQLAlchemy~=2.0.36
