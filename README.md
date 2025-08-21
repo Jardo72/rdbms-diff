@@ -75,8 +75,20 @@ The comparison generates a summary to the standandard output (see the screenshot
 The generated summary can optionally be duplicated to an HTML file. The HTML summary hasa exactly the same structure as the summary written to the standard output.
 ![data-comparison-html](./images/data-comparison-html.png)
 
+Besides the summary, the tool also generates a detailed report where you can see the details of every single validation.
+
+![data-comparison-success-details.png](./images/data-comparison-success-details.png)
+![data-comparison-failure-details.png](./images/data-comparison-failure-details.png)
+![data-comparison-error-details.png](./images/data-comparison-error-details.png)
+
 TODO:
 - describe the report written to TXT file
+    * separate section for each table
+    * the section begins with the name of the table and a summary of validations performed for the table
+    * within the section, there are subsections - one subsection per validation
+    * each subsection begins with information about the validated column, the name of the validator, and the outcome of the validation
+    * for each of the two databases, you see the validation SQL statement and the corresponding result-set
+    * if the execution of the SQL statement leads to an exception, the details of the exception are provided
 - eventual need for customization of data validation
 
 ## Test Databases (Docker Images)

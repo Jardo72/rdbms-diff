@@ -97,7 +97,7 @@ class AbstractValidator(ABC):
             return self._select(db_properties)
         except Exception as e:
             return ValidationQuery(
-                sql="No SQL statement executed - see the error details",
+                sql="See the error details",
                 result_set=f"No result-set - exception has been caught\n{str(e)}"
             )
 
