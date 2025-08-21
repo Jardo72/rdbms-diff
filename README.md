@@ -27,7 +27,7 @@ As outlined above, the packages implementing the three comparison tools depend o
 All 3rd party dependencies (i.e. [pypi.org](https://pypi.org) packages) are documented in the [requirements.txt](./requirements.txt) file. If these packages are installed, all three comparison tools should work. The following list provides an overview of all dependencies and their purpose.
 * [rich](https://pypi.org/project/rich/) package is used to generate pretty CLI output and HTML reports.
 * [SQLAlchemy](https://pypi.org/project/SQLAlchemy/) is used as vendor independent database interface that ensures the capability of the comparison tools to interact with various database engines.
-* [psycopg_binary](https://pypi.org/project/psycopg-binary/) is a database adapter for PostgreSQL databases.
+* [psycopg](https://pypi.org/project/psycopg) is a database adapter for PostgreSQL databases.
 * [mysqlclient](https://pypi.org/project/mysqlclient/) is a database adapter for MySQL databases.
 * [mariadb](https://pypi.org/project/mariadb) is a database adapter for MariaDB databases.
 
@@ -45,7 +45,8 @@ The comparison generates a summary to the standard output (see the screenshot be
 The generated summary can optionally be duplicated to an HTML file. The HTML summary hasa exactly the same structure as the summary written to the standard output.
 ![schema-comparison-html](./images/schema-comparison-html.png)
 
-TODO: describe the report written to JSON file
+Besides the summary, the tool also generates detailed report with all discrepancies found during the comparison. The report is written to a file in JSON format. The following screenshot illustrates the structure of the report.
+![schema-comparison-json-details](./images/schema-comparison-json-details.png)
 
 Meta-information about schema is retrieved using SQLAlchemy API. In other words, the comparison tools do not query any vendor-specific system views directly. This approach keeps the reading of schema information vendor independent.
 
