@@ -18,9 +18,16 @@
 
 from configparser import ConfigParser
 from dataclasses import dataclass
+from enum import StrEnum, unique
 from getpass import getpass
 from os import environ
 from os.path import exists, isfile
+
+
+@unique
+class DatabaseRole(StrEnum):
+    SOURCE = "SOURCE"
+    TARGET = "TARGET"
 
 
 @dataclass(frozen=True, slots=True)
@@ -31,6 +38,7 @@ class Passwords:
 
 @dataclass(frozen=True, slots=True)
 class DatabaseProperties:
+    role: DatabaseRole
     url: str
     schema: str
     password: str
@@ -91,11 +99,13 @@ def read_config(filename: str, ask_for_passwords: bool) -> Configuration:
     passwords = _read_passwords_from_input() if ask_for_passwords else _read_passwords_from_environment()
     return Configuration(
         source_db_config=DatabaseProperties(
+            role=DatabaseRole.SOURCE,
             url=config["DB.Source"]["URL"],
             schema=config["DB.Source"]["Schema"],
             password=passwords.source_db_password,
         ),
         target_db_config=DatabaseProperties(
+            role=DatabaseRole.TARGET,
             url=config["DB.Target"]["URL"],
             schema=config["DB.Target"]["Schema"],
             password=passwords.target_db_password,
