@@ -81,8 +81,8 @@ class AbstractValidator(ABC):
         return f"{self._table.name}.{self._column.name} - {type(self).__name__}"
 
     def validate(self) -> ColumnValidationDetails:
-        source_query_future = self._EXECUTOR.submit(self._select, self.source_db_config)
-        target_query_future = self._EXECUTOR.submit(self._select, self.target_db_config)
+        source_query_future = self._EXECUTOR.submit(self._select_with_error_handling, self.source_db_config)
+        target_query_future = self._EXECUTOR.submit(self._select_with_error_handling, self.target_db_config)
         source_query_details = source_query_future.result()
         target_query_details = target_query_future.result()
         return ColumnValidationDetails(
@@ -91,6 +91,15 @@ class AbstractValidator(ABC):
             source_query_details=source_query_details,
             target_query_details=target_query_details,
         )
+
+    def _select_with_error_handling(self, db_properties: DatabaseProperties) -> ValidationQuery:
+        try:
+            return self._select(db_properties)
+        except Exception as e:
+            return ValidationQuery(
+                sql="No SQL statement executed - see the error details",
+                result_set=f"No result-set - exception has been caught\n{str(e)}"
+            )
 
     @abstractmethod
     def _select(self, db_properties: DatabaseProperties) -> ValidationQuery:
