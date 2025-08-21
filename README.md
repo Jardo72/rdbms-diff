@@ -13,6 +13,7 @@ The following comparisons are provided:
 
 Implementing a completely generic tool that would be able to compare any combination of database engines, all possible datatypes etc. is more or less impossible (or at least very expensive in terms of implementation effort). Therefore, the tool should rather be seen as a solid foundation which can be forked and customized if it does not fully support some specific scenario.
 
+
 ## Source Code Organization
 The source code is divided to four Python packages:
 * [rdbmsdiff.foundation](./rdbmsdiff/foundation) package provides functionality common to two or more comparison tools. The classes and functions provided by this package are reusable, and the comparison tools are built on top of this reusable functionality. For instance, each of the three tools needs to read some meta-information from the compared databases. Therefore, the corresponding functionality is provided by the foundation package.
@@ -33,6 +34,15 @@ All 3rd party dependencies (i.e. [pypi.org](https://pypi.org) packages) are docu
 
 If you would like to use the comparison tools for other database engine like Oracle, you will have to take care about the corresponding database adataper(s).
 
+
+## Environment Setup
+Before using the tool, you have make sure all dependencies are installed. The most simple (and recommended) approach is the following:
+1. Clone this Git repository, or download its contents to a host where you want to use the comparison tools.
+2. Create and activate a new virtual environment (for instance, `python -m venv .venv` creates a new virtual environment).
+3. Use `pip install -r requirements.txt` to install all dependencies to the virtual environment.
+4. From the root directory of this project, use the commands documented by the subsequent sections of this document to start the particular comparison tools.
+
+
 ## Schema Comparison Tool
 The following command will display instructions about how to start schema comparison.
 ```
@@ -50,8 +60,9 @@ Besides the summary, the tool also generates detailed report with all discrepanc
 
 Meta-information about schema is retrieved using SQLAlchemy API. In other words, the comparison tools do not query any vendor-specific system views directly. This approach keeps the reading of schema information vendor independent.
 
+
 ## Record Count Comparison Tool
-The following command will display instructions about how to start comparison of record count for particular tables.
+The following command will display instructions about how to start comparison of record count for particular tables. Start this command in the root.
 ```
 python -m rdbmsdiff.recordcount.main -h
 ```
@@ -75,21 +86,26 @@ The comparison generates a summary to the standandard output (see the screenshot
 The generated summary can optionally be duplicated to an HTML file. The HTML summary hasa exactly the same structure as the summary written to the standard output.
 ![data-comparison-html](./images/data-comparison-html.png)
 
-Besides the summary, the tool also generates a detailed report where you can see the details of every single validation.
+Besides the summary, the tool also generates a detailed report where you can see the details of every single validation. The detailed report contains a separate section for each of the validated tables. The section beings with the name of the table and a summary of validations performed for the table. The following screenshot illustrates the section for a table which no discrepancies has been found. In other words, all 11 validations performed for the table were successful, and the overall outcome of the validation of the concerned table is PASSED.
 
 ![data-comparison-success-details.png](./images/data-comparison-success-details.png)
+
+Within each table section, there are subsections dedicated to particular column validations. The screenshot above also shows the first two column validations. A column validation section always start with the name of the validaed column and the validator. This is followed by the outcome of the validation (PASSED or FAILED). Subsequently, a pair of SQL statements with the corresponding result-sets is shown. One of the SQL statements is performed in the source database, the other SQL statement is performed in the target database. If both SQL statements lead to the same result-set, the outcome of the validation is PASSED. If there is a discrepancy between the two result-sets, the outcome of the validation is FAILED. The following screenshot illustrates some failed validations.
+
 ![data-comparison-failure-details.png](./images/data-comparison-failure-details.png)
+
+It can also happen that one of the SQL statements fails. For instance, if there is a schema discrepancy, one of the SQL statements can encounter a non-existent column. In such cases, the result-set for the failed SQL statement shows the error details. The following screenshot illustrates such a situation.
+
 ![data-comparison-error-details.png](./images/data-comparison-error-details.png)
 
-TODO:
-- describe the report written to TXT file
-    * separate section for each table
-    * the section begins with the name of the table and a summary of validations performed for the table
-    * within the section, there are subsections - one subsection per validation
-    * each subsection begins with information about the validated column, the name of the validator, and the outcome of the validation
-    * for each of the two databases, you see the validation SQL statement and the corresponding result-set
-    * if the execution of the SQL statement leads to an exception, the details of the exception are provided
-- eventual need for customization of data validation
+
+## Limitations of Data Validation
+While the tool provides useful functionality for comparing both schemas and data across two RDBMS databases, it is important to note that the **data validation provided is not bulletproof**. The following limitations apply:
+1. **Partial Data Type Support.** The current version of the tool supports validation for a subset of commonly used data types. However, not all possible data types are supported. This means that certain columns may not be validated at all, and discrepancies could go undetected.
+2. **Hybrid Migrations and Data Type Changes.** In cases of hybrid migrations (for example, Oracle to AWS Aurora/PostgreSQL), change of the data type of some columns could be needed. For instance, boolean values represented by numeric values 0 and 1 may be transformed to bool data type. Such transformations can result in differences that the tool in its current form cannot directly reconcile.
+
+Because of the above listed limitations, users may need to implement additional custom validation logic when performing critical validations, particularly in heterogeneous migration scenarios. Additional validators have to be derived from the `AbstractValidator` class (see the [abstract_validator.py](./rdbmsdiff/data/abstract_validator.py) module). They also have to be incorporated into the `ValidationEngine` class (see the [validation_engine.py](./rdbmsdiff/data/validation_engine.py) module).
+
 
 ## Test Databases (Docker Images)
 The [test-db](./test-db) directory structure contains Dockerfiles and SQL scripts that can be used to build Docker images with test databases based on various database engines. These databases can be used to test the tools comprising RDBMS Diff.
