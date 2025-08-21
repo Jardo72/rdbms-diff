@@ -19,6 +19,7 @@
 from argparse import ArgumentParser, Namespace, RawTextHelpFormatter
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
+from traceback import print_exc
 from typing import Dict, Optional, Sequence, Tuple
 
 from rich.console import Console
@@ -163,6 +164,9 @@ def main() -> None:
         print_comparison_results(config, comparison_results, cmd_line_args.output_html_file)
     except ReadConfigurationError as e:
         handle_configuration_error(e)
+    except:
+        print("ERROR!!! Unexpected exception caught:")
+        print_exc()
 
 
 if __name__ == "__main__":

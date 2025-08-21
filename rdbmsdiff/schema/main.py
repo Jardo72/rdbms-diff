@@ -18,6 +18,7 @@
 
 from argparse import ArgumentParser, Namespace, RawTextHelpFormatter
 from dataclasses import dataclass
+from traceback import print_exc
 from typing import Tuple
 
 from rich.console import Console
@@ -133,6 +134,9 @@ def main() -> None:
         print_summary(config, schema_diff, cmd_line_args.summary_html_file)
     except ReadConfigurationError as e:
         handle_configuration_error(e)
+    except:
+        print("ERROR!!! Unexpected exception caught:")
+        print_exc()
 
 
 if __name__ == "__main__":
