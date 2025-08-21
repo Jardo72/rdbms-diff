@@ -83,18 +83,21 @@ def print_summary(config: Configuration, statistics: Statistics, summary_html_fi
 
     table.add_column(Text("Subject", justify="center"), justify="left")
     table.add_column(Text("Overall Count", justify="center"), justify="right")
+    table.add_column(Text("Success Count", justify="center"), justify="right")
     table.add_column(Text("Failure Count", justify="center"), justify="right")
     table.add_column(Text("Status", justify="center"), justify="center")
 
     table.add_row(
         "Tables",
         str(statistics.overall_table_count),
+        str(statistics.succsessful_table_count),
         str(statistics.failed_table_count),
         Status.format(Status.OK if statistics.failed_table_count == 0 else Status.ERROR),
     )
     table.add_row(
         "Validations",
         str(statistics.overall_validation_count),
+        str(statistics.successful_validation_count),
         str(statistics.failed_validation_count),
         Status.format(Status.OK if statistics.failed_validation_count == 0 else Status.ERROR),
     )

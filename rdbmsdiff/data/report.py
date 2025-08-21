@@ -30,6 +30,14 @@ class Statistics:
     overall_validation_count: int
     failed_validation_count: int
 
+    @property
+    def succsessful_table_count(self) -> int:
+        return self.overall_table_count - self.failed_table_count
+
+    @property
+    def successful_validation_count(self) -> int:
+        return self.overall_validation_count - self.failed_validation_count
+
 
 class _Statistics:
 
