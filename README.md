@@ -43,6 +43,13 @@ Before using the tool, you have make sure all dependencies are installed. The mo
 4. From the root directory of this project, use the commands documented by the subsequent sections of this document to start the particular comparison tools.
 
 
+## Database Access and Permissions
+To perform the comparisons, the tools reads meta-information about the schema from both databases. Because schema inspection and reading of record require access to system catalog tables and table data, the tool must be executed with database users that have sufficient permissions. The following privileges are required:
+* **Metadata access.** Ability to query system catalog views (e.g., INFORMATION_SCHEMA or database-specific equivalents) to read schema definitions such as tables, columns, indexes, and constraints.
+* **Read access to user tables.** Permissions to count rows in tables and fetch column values for specific comparisons.
+
+**No write permissions are needed**. The tool does not modify data or schema objects, so privileges such as INSERT, UPDATE, DELETE, or DDL permissions do not have to be granted.
+
 ## Schema Comparison Tool
 The following command will display instructions about how to start schema comparison.
 ```
