@@ -50,6 +50,7 @@ To perform the comparisons, the tools reads meta-information about the schema fr
 
 **No write permissions are needed**. The tool does not modify data or schema objects, so privileges such as INSERT, UPDATE, DELETE, or DDL permissions do not have to be granted.
 
+
 ## Schema Comparison Tool
 The following command will display instructions about how to start schema comparison.
 ```

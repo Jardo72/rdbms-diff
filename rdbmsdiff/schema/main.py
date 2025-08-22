@@ -18,7 +18,6 @@
 
 from argparse import ArgumentParser, Namespace, RawTextHelpFormatter
 from dataclasses import dataclass
-from traceback import print_exc
 from typing import Tuple
 
 from rich.console import Console
@@ -26,7 +25,7 @@ from rich.table import Table
 from rich.text import Text
 
 from rdbmsdiff.foundation import Configuration, ReadConfigurationError, Status
-from rdbmsdiff.foundation import epilog, handle_configuration_error, read_config, read_db_meta_data
+from rdbmsdiff.foundation import epilog, handle_configuration_error, handle_general_error, read_config, read_db_meta_data
 from .diff import DBSchemaDiff
 from .report import write_report
 
@@ -134,9 +133,8 @@ def main() -> None:
         print_summary(config, schema_diff, cmd_line_args.summary_html_file)
     except ReadConfigurationError as e:
         handle_configuration_error(e)
-    except:
-        print("ERROR!!! Unexpected exception caught:")
-        print_exc()
+    except Exception as e:
+        handle_general_error(e)
 
 
 if __name__ == "__main__":

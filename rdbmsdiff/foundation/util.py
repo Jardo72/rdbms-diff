@@ -17,7 +17,9 @@
 #
 
 from __future__ import annotations
+from argparse import ArgumentError
 from enum import Enum, unique
+from traceback import print_exc
 
 
 @unique
@@ -37,3 +39,8 @@ class Status(Enum):
         return f"[bold][{color}]{status.name}[/{color}][/bold]"
 
 
+def handle_general_error(e: Exception) -> None:
+        if isinstance(e, ArgumentError):
+            raise
+        print("ERROR!!! Unexpected exception caught:")
+        print_exc()
