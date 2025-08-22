@@ -19,15 +19,30 @@
 from abc import ABC
 from abc import abstractmethod
 from concurrent.futures import ThreadPoolExecutor
-from typing import Any, Sequence
+from typing import (
+    Any,
+    Sequence,
+)
 
 from sqlalchemy import create_engine
-from sqlalchemy import Engine, MetaData
+from sqlalchemy import (
+    Engine,
+    MetaData,
+)
 from sqlalchemy.engine import Row
 
-from rdbmsdiff.foundation import Configuration, DatabaseProperties, DBColumn, DBTable
+from rdbmsdiff.foundation import (
+    Configuration,
+    DatabaseProperties,
+    DBColumn,
+    DBTable
+)
 
-from .validation_details import ColumnValidationDetails, ValidationQuery, ValidationResult
+from .validation_details import (
+    ColumnValidationDetails,
+    ValidationQuery,
+    ValidationResult,
+)
 
 
 class AbstractValidator(ABC):

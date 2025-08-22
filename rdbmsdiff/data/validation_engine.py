@@ -20,12 +20,20 @@ from typing import Tuple
 
 from rich.console import Console
 
-from rdbmsdiff.foundation import Configuration, DBSchema, DBTable, Stopwatch
+from rdbmsdiff.foundation import (
+    Configuration,
+    DBSchema,
+    DBTable,
+    Stopwatch,
+)
 
 from .abstract_validator import AbstractValidator
 from .boolean_validator import BooleanValidator
 from .date_time_validator import DateTimeValidator
-from .null_value_count_validator import NullValueCheckType, NullValueCountValidator
+from .null_value_count_validator import (
+    NullValueCheckType,
+    NullValueCountValidator,
+)
 from .numeric_validator import NumericValidator
 from .record_validator import RecordValidator
 from .report import Report

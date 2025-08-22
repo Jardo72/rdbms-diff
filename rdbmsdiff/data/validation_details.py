@@ -18,7 +18,10 @@
 
 from dataclasses import dataclass
 from enum import Enum
-from enum import auto, unique
+from enum import (
+    auto,
+    unique,
+)
 from typing import Tuple
 
 

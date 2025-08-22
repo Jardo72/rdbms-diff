@@ -19,7 +19,12 @@
 from sqlalchemy import text
 from sqlalchemy.orm import Session
 
-from rdbmsdiff.foundation import Configuration, DatabaseProperties, DBColumn, DBTable
+from rdbmsdiff.foundation import (
+    Configuration,
+    DatabaseProperties,
+    DBColumn,
+    DBTable,
+)
 from .abstract_validator import AbstractValidator
 from .validation_details import ValidationQuery
 

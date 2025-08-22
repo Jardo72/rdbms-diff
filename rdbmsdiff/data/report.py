@@ -20,7 +20,11 @@ from dataclasses import dataclass
 
 from rdbmsdiff.foundation import DBTable, Status
 
-from .validation_details import ColumnValidationDetails, TableValidationDetails, ValidationResult
+from .validation_details import (
+    ColumnValidationDetails,
+    TableValidationDetails,
+    ValidationResult,
+)
 
 
 @dataclass(frozen=True, slots=True)

@@ -16,14 +16,27 @@
 # limitations under the License.
 #
 
-from argparse import ArgumentParser, Namespace, RawTextHelpFormatter
+from argparse import (
+    ArgumentParser,
+    Namespace,
+    RawTextHelpFormatter,
+)
 
 from rich.console import Console
 from rich.table import Table
 from rich.text import Text
 
-from rdbmsdiff.foundation import Configuration, DBSchema, ReadConfigurationError, Status
-from rdbmsdiff.foundation import epilog, handle_configuration_error, handle_general_error, read_config, read_db_meta_data
+from rdbmsdiff.foundation import (
+    Configuration,
+    DBSchema,
+    ReadConfigurationError,
+    Status,
+    epilog,
+    handle_configuration_error,
+    handle_general_error,
+    read_config,
+    read_db_meta_data,
+)
 
 from .report import Report, Statistics
 from .validation_engine import ValidationEngine
