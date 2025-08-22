@@ -11,7 +11,7 @@ The following comparisons are provided:
 * **Record count comparison** is able to detect situations when the overall number of records in a table in one of the database differs from the overall number of records in the same table in the other database.
 * **Data comparison** is able to detect situations when a record in one of the databases has at least one column value distinct from its counterpart in the other database.
 
-Implementing a completely generic tool that would be able to compare any combination of database engines, all possible datatypes etc. is more or less impossible (or at least very expensive in terms of implementation effort). Therefore, the tool should rather be seen as a solid foundation which can be forked and customized if it does not fully support some specific scenario.
+Implementing a completely generic tool that would be able to compare any combination of database engines, all possible datatypes etc. is more or less impossible (or at least very expensive in terms of implementation effort). Therefore, the tools should rather be seen as a solid foundation which can be forked and customized if it does not fully support some specific scenario.
 
 
 ## Source Code Organization
@@ -52,7 +52,7 @@ To perform the comparisons, the tools reads meta-information about the schema fr
 
 
 ## Schema Comparison Tool
-The following command will display instructions about how to start schema comparison.
+The following command will display instructions about how to start schema comparison. Start this command in the root directory of this project.
 ```
 python -m rdbmsdiff.schema.main -h
 ```
@@ -70,7 +70,7 @@ Meta-information about schema is retrieved using SQLAlchemy API. In other words,
 
 
 ## Record Count Comparison Tool
-The following command will display instructions about how to start comparison of record count for particular tables. Start this command in the root.
+The following command will display instructions about how to start comparison of record count for particular tables. Start this command in the root directory of this project.
 ```
 python -m rdbmsdiff.recordcount.main -h
 ```
@@ -83,7 +83,7 @@ The generated summary can optionally be duplicated to an HTML file. The HTML sum
 
 
 ## Data Comparison Tool
-The following command will display instructions about how to start data comparison.
+The following command will display instructions about how to start data comparison. Start this command in the root directory of this project.
 ```
 python -m rdbmsdiff.data.main -h
 ```
