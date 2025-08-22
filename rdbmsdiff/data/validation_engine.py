@@ -71,7 +71,7 @@ class ValidationEngine:
 
     def validate(self) -> None:
         self._console.print()
-        self._console.print("[cyan]Going to compare tables...[/cyan]")
+        self._console.print("[cyan]Going to compare tables...[/]")
         table_count = len(self._source_db_meta_data.tables)
         overall_stopwatch = Stopwatch.start()
         with self._console.status(f"Comparing tables..."):
