@@ -16,7 +16,11 @@
 # limitations under the License.
 #
 
-from argparse import ArgumentParser, Namespace, RawTextHelpFormatter
+from argparse import (
+    ArgumentParser,
+    Namespace,
+    RawTextHelpFormatter,
+)
 from dataclasses import dataclass
 from typing import Tuple
 
@@ -24,8 +28,16 @@ from rich.console import Console
 from rich.table import Table
 from rich.text import Text
 
-from rdbmsdiff.foundation import Configuration, ReadConfigurationError, Status
-from rdbmsdiff.foundation import epilog, handle_configuration_error, handle_general_error, read_config, read_db_meta_data
+from rdbmsdiff.foundation import (
+    Configuration,
+    ReadConfigurationError,
+    Status,
+    epilog,
+    handle_configuration_error,
+    handle_general_error,
+    read_config,
+    read_db_meta_data,
+)
 from .diff import DBSchemaDiff
 from .report import write_report
 

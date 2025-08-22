@@ -17,11 +17,19 @@
 #
 
 from json import dump
-from typing import Any, Dict, Sequence
+from typing import (
+    Any,
+    Dict,
+    Sequence,
+)
 
 from rich.console import Console
 
-from .diff import DBColumnDiff, DBSchemaDiff, DBTableDiff
+from .diff import (
+    DBColumnDiff,
+    DBSchemaDiff,
+    DBTableDiff,
+)
 
 
 def _generate_column_diff(column_diff: DBColumnDiff) -> Dict[str, Any]:
