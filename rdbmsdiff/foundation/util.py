@@ -18,7 +18,10 @@
 
 from __future__ import annotations
 from argparse import ArgumentError
-from enum import Enum, unique
+from enum import (
+    Enum,
+    unique,
+)
 from traceback import print_exc
 
 

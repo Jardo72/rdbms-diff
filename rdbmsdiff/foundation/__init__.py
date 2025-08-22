@@ -16,9 +16,20 @@
 # limitations under the License.
 #
 
-from .config import Configuration, DatabaseProperties, DatabaseRole, ReadConfigurationError
-from .config import epilog, handle_configuration_error, read_config
-from .metadata import DBColumn, DBTable, DBSchema
+from .config import (
+    Configuration,
+    DatabaseProperties,
+    DatabaseRole,
+    ReadConfigurationError,
+    epilog,
+    handle_configuration_error,
+    read_config,
+)
+from .metadata import (
+    DBColumn,
+    DBTable,
+    DBSchema
+)
 from .metadata import read_db_meta_data
 from .stopwatch import Stopwatch
 from .util import Status

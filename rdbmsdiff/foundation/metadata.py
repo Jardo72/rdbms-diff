@@ -17,12 +17,40 @@
 #
 
 from dataclasses import dataclass
-from typing import Any, Dict, Set, Tuple
+from typing import (
+    Any,
+    Dict,
+    Set,
+    Tuple
+)
 
 from rich.console import Console
-from sqlalchemy import create_engine, inspect, MetaData
-from sqlalchemy.sql.schema import CheckConstraint, ForeignKeyConstraint, PrimaryKeyConstraint, UniqueConstraint
-from sqlalchemy.sql.sqltypes import BIGINT, BLOB, BOOLEAN, CLOB, DATE, DOUBLE, FLOAT, INTEGER, SMALLINT, TEXT, TIME, TIMESTAMP, VARCHAR
+from sqlalchemy import (
+    create_engine,
+    inspect,
+    MetaData,
+)
+from sqlalchemy.sql.schema import (
+    CheckConstraint,
+    ForeignKeyConstraint,
+    PrimaryKeyConstraint,
+    UniqueConstraint,
+)
+from sqlalchemy.sql.sqltypes import (
+    BIGINT,
+    BLOB,
+    BOOLEAN,
+    CLOB,
+    DATE,
+    DOUBLE,
+    FLOAT,
+    INTEGER,
+    SMALLINT,
+    TEXT,
+    TIME,
+    TIMESTAMP,
+    VARCHAR
+)
 
 from .config import DatabaseProperties
 

@@ -18,10 +18,16 @@
 
 from configparser import ConfigParser
 from dataclasses import dataclass
-from enum import StrEnum, unique
+from enum import (
+    StrEnum,
+    unique,
+)
 from getpass import getpass
 from os import environ
-from os.path import exists, isfile
+from os.path import (
+    exists,
+    isfile,
+)
 
 
 @unique
