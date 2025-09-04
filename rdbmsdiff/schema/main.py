@@ -25,6 +25,7 @@ from dataclasses import dataclass
 from typing import Tuple
 
 from rich.console import Console
+from rich.padding import Padding
 from rich.table import Table
 from rich.text import Text
 
@@ -126,7 +127,7 @@ def print_summary(config: Configuration, db_schema_diff: DBSchemaDiff, summary_h
         )
 
     console.print()
-    console.print(table)
+    console.print(Padding(table, (1, 2)))
     console.print()
     console.print(f"Source DB: [cyan]{config.source_db_config.url_without_password}[/], schema [cyan]{config.source_db_config.schema}[/]")
     console.print(f"Target DB: [cyan]{config.target_db_config.url_without_password}[/], schema [cyan]{config.target_db_config.schema}[/]")

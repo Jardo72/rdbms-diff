@@ -22,6 +22,7 @@ from dataclasses import dataclass
 from typing import Dict, Optional, Sequence, Tuple
 
 from rich.console import Console
+from rich.padding import Padding
 from rich.table import Table
 from rich.text import Text
 from sqlalchemy import create_engine, func, select
@@ -140,7 +141,7 @@ def print_comparison_results(config: Configuration, comparison_results: Sequence
         )
 
     console.print()
-    console.print(table)
+    console.print(Padding(table, (1, 2)))
     console.print()
     console.print(f"Source DB: [cyan]{config.source_db_config.url_without_password}[/], schema [cyan]{config.source_db_config.schema}[/]")
     console.print(f"Target DB: [cyan]{config.target_db_config.url_without_password}[/], schema [cyan]{config.target_db_config.schema}[/]")

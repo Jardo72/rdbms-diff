@@ -23,6 +23,7 @@ from argparse import (
 )
 
 from rich.console import Console
+from rich.padding import Padding
 from rich.table import Table
 from rich.text import Text
 
@@ -116,7 +117,7 @@ def print_summary(config: Configuration, statistics: Statistics, summary_html_fi
     )
 
     console.print()
-    console.print(table)
+    console.print(Padding(table, (1, 2)))
     console.print()
     console.print(f"Source DB: [cyan]{config.source_db_config.url_without_password}[/], schema [cyan]{config.source_db_config.schema}[/]")
     console.print(f"Target DB: [cyan]{config.target_db_config.url_without_password}[/], schema [cyan]{config.target_db_config.schema}[/]")

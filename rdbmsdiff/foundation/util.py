@@ -22,6 +22,10 @@ from enum import (
     Enum,
     unique,
 )
+from importlib.resources import (
+    as_file,
+    files,
+)
 from traceback import print_exc
 
 
@@ -40,6 +44,12 @@ class Status(Enum):
         else:
             color = "red"
         return f"[bold][{color}]{status.name}[/{color}][/bold]"
+
+
+def load_banner() -> str:
+    resource = files("rdbmsdiff.foundation").joinpath("banner.txt")
+    with as_file(resource) as file:
+        return file.read_text(encoding="UTF-8")
 
 
 def handle_general_error(e: Exception) -> None:
