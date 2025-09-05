@@ -36,6 +36,7 @@ from rdbmsdiff.foundation import (
     epilog,
     handle_configuration_error,
     handle_general_error,
+    print_banner,
     read_config,
     read_db_meta_data,
 )
@@ -137,6 +138,7 @@ def print_summary(config: Configuration, db_schema_diff: DBSchemaDiff, summary_h
 
 def main() -> None:
     try:
+        print_banner()
         cmd_line_args = parse_cmd_line_args()
         config = read_config(cmd_line_args.config_file, cmd_line_args.ask_for_passwords)
         source_meta_data = read_db_meta_data(config.source_db_config)

@@ -28,6 +28,10 @@ from importlib.resources import (
 )
 from traceback import print_exc
 
+from rich.console import Console
+from rich.padding import Padding
+from rich.text import Text
+
 
 @unique
 class Status(Enum):
@@ -46,10 +50,16 @@ class Status(Enum):
         return f"[bold][{color}]{status.name}[/{color}][/bold]"
 
 
-def load_banner() -> str:
+def _load_banner() -> str:
     resource = files("rdbmsdiff.foundation").joinpath("banner.txt")
     with as_file(resource) as file:
         return file.read_text(encoding="UTF-8")
+
+
+def print_banner() -> None:
+    console = Console(record=False, highlight=False)
+    banner = _load_banner()
+    console.print(Padding(Text(banner, justify="left", style="bold green"), (1, 2)))
 
 
 def handle_general_error(e: Exception) -> None:

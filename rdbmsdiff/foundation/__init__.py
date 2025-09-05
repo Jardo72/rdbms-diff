@@ -35,5 +35,5 @@ from .stopwatch import Stopwatch
 from .util import (
     Status,
     handle_general_error,
-    load_banner,
+    print_banner,
 )
