@@ -107,6 +107,12 @@ It can also happen that one of the SQL statements fails. For instance, if there 
 ![data-comparison-error-details.png](./images/data-comparison-error-details.png)
 
 
+## Limitations of Schema Validation
+While the tool provides useful functionality for comparing both schemas and data across two RDBMS databases, it is important to note that the **schema validation provided is not bulletproof**. The following limitations apply:
+1. **Missing validation of PL/SQL functions, procedures and packages.** The current version of the tools does not compare PL/SQL functions, procedures and packages. For instance, if some functions and procedures present in the source database are missing in the target database, they are not reported.
+2. **Missing validation of triggers**. Similarly to functions and procedures, there is no comparison of triggers. If some triggers present in the source database are missing in the target database, they are not reported.
+
+
 ## Limitations of Data Validation
 While the tool provides useful functionality for comparing both schemas and data across two RDBMS databases, it is important to note that the **data validation provided is not bulletproof**. The following limitations apply:
 1. **Partial Data Type Support.** The current version of the tool supports validation for a subset of commonly used data types. However, not all possible data types are supported. This means that certain columns may not be validated at all, and discrepancies could go undetected.

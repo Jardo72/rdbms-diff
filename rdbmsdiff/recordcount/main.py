@@ -16,20 +16,45 @@
 # limitations under the License.
 #
 
-from argparse import ArgumentParser, Namespace, RawTextHelpFormatter
+from argparse import (
+    ArgumentParser,
+    Namespace,
+    RawTextHelpFormatter,
+)
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
-from typing import Dict, Optional, Sequence, Tuple
+from typing import (
+    Dict,
+    Optional,
+    Sequence,
+    Tuple,
+)
 
 from rich.console import Console
+from rich.padding import Padding
 from rich.table import Table
 from rich.text import Text
-from sqlalchemy import create_engine, func, select
+from sqlalchemy import (
+    create_engine,
+    func,
+    select,
+)
 from sqlalchemy import MetaData
 from sqlalchemy.orm import Session
 
-from rdbmsdiff.foundation import Configuration, DatabaseProperties, ReadConfigurationError, Status
-from rdbmsdiff.foundation import epilog, handle_configuration_error, handle_general_error, read_config
+from rdbmsdiff.foundation import (
+    Configuration,
+    DatabaseProperties,
+    ReadConfigurationError,
+    Status,
+)
+from rdbmsdiff.foundation import (
+    epilog,
+    handle_configuration_error,
+    handle_general_error,
+    print_banner,
+    read_config,
+)
 
 
 @dataclass(frozen=True, slots=True)
@@ -140,7 +165,7 @@ def print_comparison_results(config: Configuration, comparison_results: Sequence
         )
 
     console.print()
-    console.print(table)
+    console.print(Padding(table, (1, 2)))
     console.print()
     console.print(f"Source DB: [cyan]{config.source_db_config.url_without_password}[/], schema [cyan]{config.source_db_config.schema}[/]")
     console.print(f"Target DB: [cyan]{config.target_db_config.url_without_password}[/], schema [cyan]{config.target_db_config.schema}[/]")
@@ -150,8 +175,7 @@ def print_comparison_results(config: Configuration, comparison_results: Sequence
 
 def main() -> None:
     try:
-        console = Console(record=False, highlight=False)
-        console.print()
+        print_banner()
         cmd_line_args = parse_cmd_line_args()
         config = read_config(cmd_line_args.config_file, cmd_line_args.ask_for_passwords)
         executor = ThreadPoolExecutor(max_workers=2)

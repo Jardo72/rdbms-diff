@@ -22,7 +22,15 @@ from enum import (
     Enum,
     unique,
 )
+from importlib.resources import (
+    as_file,
+    files,
+)
 from traceback import print_exc
+
+from rich.console import Console
+from rich.padding import Padding
+from rich.text import Text
 
 
 @unique
@@ -40,6 +48,18 @@ class Status(Enum):
         else:
             color = "red"
         return f"[bold][{color}]{status.name}[/{color}][/bold]"
+
+
+def _load_banner() -> str:
+    resource = files("rdbmsdiff.foundation").joinpath("banner.txt")
+    with as_file(resource) as file:
+        return file.read_text(encoding="UTF-8")
+
+
+def print_banner() -> None:
+    console = Console(record=False, highlight=False)
+    banner = _load_banner()
+    console.print(Padding(Text(banner, justify="left", style="bold green"), (1, 2)))
 
 
 def handle_general_error(e: Exception) -> None:

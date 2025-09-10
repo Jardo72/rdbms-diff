@@ -23,6 +23,7 @@ from argparse import (
 )
 
 from rich.console import Console
+from rich.padding import Padding
 from rich.table import Table
 from rich.text import Text
 
@@ -34,6 +35,7 @@ from rdbmsdiff.foundation import (
     epilog,
     handle_configuration_error,
     handle_general_error,
+    print_banner,
     read_config,
     read_db_meta_data,
 )
@@ -116,7 +118,7 @@ def print_summary(config: Configuration, statistics: Statistics, summary_html_fi
     )
 
     console.print()
-    console.print(table)
+    console.print(Padding(table, (1, 2)))
     console.print()
     console.print(f"Source DB: [cyan]{config.source_db_config.url_without_password}[/], schema [cyan]{config.source_db_config.schema}[/]")
     console.print(f"Target DB: [cyan]{config.target_db_config.url_without_password}[/], schema [cyan]{config.target_db_config.schema}[/]")
@@ -126,6 +128,7 @@ def print_summary(config: Configuration, statistics: Statistics, summary_html_fi
 
 def main() -> None:
     try:
+        print_banner()
         cmd_line_args = parse_cmd_line_args()
         config = read_config(cmd_line_args.config_file, cmd_line_args.ask_for_passwords)
         source_db_meta_data = read_db_meta_data(config.source_db_config)
